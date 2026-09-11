@@ -1,0 +1,81 @@
+{
+  "Navbar": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "destinations": "Study Abroad",
+    "partners": "Partners",
+    "contact": "Contact Us"
+  },
+  "Hero": {
+    "badge": "Shaping the Future of Global Education",
+    "title": "Your Journey to Studying Abroad Starts Here",
+    "description": "Salam Consulting provides professional education consulting services for students pursuing international study opportunities. We support students throughout the journey—from university selection and applications to documentation, visas, and preparation for studying abroad.",
+    "primaryBtn": "Start Your Journey",
+    "secondaryBtn": "Explore Programs"
+  },
+  "Services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive support for your international education journey",
+    "items": {
+      "consultation": { "title": "1. Consultation", "description": "Personalized guidance based on the student's academic background, goals, budget, and preferred destination." },
+      "selection": { "title": "2. University Selection", "description": "Helping students identify suitable universities and programs." },
+      "admission": { "title": "3. Admission & Application", "description": "Guidance throughout the university application and admission process." },
+      "documentation": { "title": "4. Documentation", "description": "Assistance with preparing and organizing required documents." },
+      "scholarship": { "title": "5. Scholarship Guidance", "description": "Helping students identify and apply for relevant scholarship opportunities." },
+      "visa": { "title": "6. Visa Assistance", "description": "Guidance and support throughout the visa preparation process." },
+      "predeparture": { "title": "7. Pre-departure Support", "description": "Helping students prepare for their journey and transition to studying abroad." }
+    }
+  },
+  "Destinations": {
+    "title": "Study Destinations",
+    "subtitle": "We help students explore educational opportunities in:",
+    "korea": "Korea",
+    "turkiye": "Türkiye",
+    "malaysia": "Malaysia",
+    "china": "China",
+    "azerbaijan": "Azerbaijan",
+    "uzbekistan": "Uzbekistan",
+    "other": "Other Destinations"
+  },
+  "Partners": {
+    "title": "Our Partners",
+    "subtitle": "Trusted by top universities and organizations worldwide"
+  },
+  "About": {
+    "title": "Who We Are",
+    "subtitle": "Building global bridges through world-class education",
+    "storyTitle": "Our Origin Story",
+    "storyDesc": "Salam Consulting was founded in February 2024 in Dushanbe, Tajikistan, by young entrepreneur and education advocate Abdurahmonbek Akhmedov. The company was established with a vision to help students access international education opportunities and receive professional guidance throughout their journey to studying abroad.",
+    "missionTitle": "Our Mission",
+    "missionDesc": "To empower ambitious students by connecting them with life-changing global educational opportunities, and to serve as a trusted bridge between international talent and prestigious universities worldwide.",
+    "visionTitle": "Our Vision",
+    "visionDesc": "To be the leading global education consultancy recognized for absolute integrity, exceptional success rates, and transformative impact on students' lives.",
+    "whyUsTitle": "Why Partner With Us?",
+    "whyUsDesc": "For Universities and Investors, Salam Consulting represents a dedicated gateway to high-potential talent in Central Asia and beyond. We operate on Silicon Valley principles of transparency, data-driven matching, and uncompromising quality.",
+    "values": {
+      "integrity": "Absolute Integrity",
+      "excellence": "Uncompromising Excellence",
+      "innovation": "Forward-Thinking Innovation"
+    }
+  },
+  "Contact": {
+    "title": "Get in Touch",
+    "subtitle": "Whether you're a student ready to start your journey or an institution looking to partner, we're here to help.",
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Your Message",
+      "submit": "Send Message"
+    }
+  },
+  "Cta": {
+    "title": "Ready to Start Your Journey?",
+    "description": "Contact us today to schedule your free consultation and discover how we can help you achieve your international education goals."
+  },
+  "Metadata": {
+    "title": "Salam Consulting | Study Abroad & Education Agency",
+    "description": "Salam Consulting provides professional education consulting services for students pursuing international study opportunities."
+  }
+}
