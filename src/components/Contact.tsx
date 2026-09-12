@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Mail, Send, CheckCircle2 } from 'lucide-react';
 
 export default function Contact() {
@@ -80,21 +80,53 @@ export default function Contact() {
           className="lg:col-span-3 relative"
         >
           <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 shadow-[0_8px_30px_rgba(0,0,0,0.04)] relative overflow-hidden">
-            {isSubmitted ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-8 text-center">
-                <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-sm border border-green-100">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="text-3xl font-bold text-slate-900 mb-3 tracking-tight">Message Sent!</h3>
-                <p className="text-slate-500 max-w-sm font-medium mb-8">Thank you for reaching out. Our team will get back to you within 24 hours.</p>
-                <button 
-                  onClick={() => setIsSubmitted(false)}
-                  className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full hover:bg-blue-100"
+            <AnimatePresence>
+              {isSubmitted && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm z-20 p-8 text-center rounded-3xl"
                 >
-                  <Send className="w-4 h-4" /> Send another message
-                </button>
-              </div>
-            ) : null}
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: 'spring', damping: 15, delay: 0.1 }}
+                    className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6 shadow-[0_8px_30px_rgba(34,197,94,0.2)] border border-green-100"
+                  >
+                    <CheckCircle2 className="w-10 h-10" />
+                  </motion.div>
+                  <motion.h3 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-3xl font-bold text-slate-900 mb-3 tracking-tight"
+                  >
+                    Message Sent!
+                  </motion.h3>
+                  <motion.p 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-slate-500 max-w-sm font-medium mb-8"
+                  >
+                    Thank you for reaching out. Our team will get back to you within 24 hours.
+                  </motion.p>
+                  <motion.button 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setIsSubmitted(false)}
+                    className="text-sm font-bold text-blue-600 hover:text-white hover:bg-blue-600 transition-colors flex items-center gap-2 bg-blue-50 px-8 py-3.5 rounded-full shadow-sm"
+                  >
+                    <Send className="w-4 h-4" /> Send another message
+                  </motion.button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <form className="space-y-6 relative z-10" onSubmit={handleSubmit}>
               {error && <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}

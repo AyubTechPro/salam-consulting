@@ -50,6 +50,18 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: t('description'),
       images: ['/logo/salamconsulting-logo-original.svg'],
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    keywords: ['study abroad', 'education consulting', 'Salam Consulting', 'Tajikistan', 'universities', 'scholarships', 'таҳсил дар хориҷа', 'донишгоҳҳо'],
   };
 }
 

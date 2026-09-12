@@ -2,36 +2,37 @@
 
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const destinationsData = [
   { 
     id: 'korea', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Gyeongbokgung_Palace_in_Seoul.jpg/1280px-Gyeongbokgung_Palace_in_Seoul.jpg',
+    image: '/destinations/korea-v2.jpg',
     desc: 'Experience world-class education amidst a vibrant mix of ancient tradition and futuristic technology.'
   },
   { 
     id: 'turkiye', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Hagia_Sophia_Mars_2013.jpg/1280px-Hagia_Sophia_Mars_2013.jpg',
+    image: '/destinations/turkiye-v2.jpg',
     desc: 'Study at the crossroads of Europe and Asia, where history and modern academia meet.'
   },
   { 
     id: 'malaysia', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Petronas_Towers_in_Kuala_Lumpur.jpg/1280px-Petronas_Towers_in_Kuala_Lumpur.jpg',
+    image: '/destinations/malaysia-v2.jpg',
     desc: 'A tropical hub for international students offering affordable, high-quality global degrees.'
   },
   { 
     id: 'china', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/The_Great_Wall_of_China_at_Jinshanling-edit.jpg/1280px-The_Great_Wall_of_China_at_Jinshanling-edit.jpg',
+    image: '/destinations/china-v2.jpg',
     desc: 'Immerse yourself in a rapidly growing academic powerhouse with vast scholarship opportunities.'
   },
   { 
     id: 'azerbaijan', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Baku_Flame_Towers.jpg/1280px-Baku_Flame_Towers.jpg',
+    image: '/destinations/azerbaijan-v2.jpg',
     desc: 'Discover modern campuses in the Land of Fire, bridging Eastern and Western cultures.'
   },
   { 
     id: 'uzbekistan', 
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Registan_Square.jpg/1280px-Registan_Square.jpg',
+    image: '/destinations/uzbekistan-v2.jpg',
     desc: 'Study in the historic heart of the Silk Road with rapidly expanding international partnerships.'
   },
 ];
@@ -80,9 +81,13 @@ export default function Destinations() {
             className={`relative rounded-3xl overflow-hidden group cursor-default shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] transition-all duration-700 ${index === 0 || index === 3 ? 'md:col-span-2' : ''}`}
           >
             {/* Background Image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out group-hover:scale-110"
-              style={{ backgroundImage: `url(${dest.image})` }}
+            <Image 
+              src={dest.image}
+              alt={t(dest.id)}
+              fill
+              priority={index < 3}
+              className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             
             {/* Dark Overlay that deepens on hover */}
