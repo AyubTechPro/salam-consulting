@@ -9,7 +9,7 @@ const resend = resendApiKey ? new Resend(resendApiKey) : null;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, subject, message } = body;
+    const { name, email, subject, message, locale = 'en' } = body;
 
     // Validate input fields
     if (!name || !email || !message) {
@@ -89,10 +89,36 @@ export async function POST(req: Request) {
     });
 
     // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER (Silicon Valley Standard)
+    // Localization
+    const translations: Record<string, any> = {
+      en: {
+        subject: 'Inquiry Received - Salam Consulting',
+        hello: `Hello ${name.split(' ')[0]},`,
+        received: 'Thank you for reaching out to <strong>Salam Consulting</strong>. We have successfully received your inquiry.',
+        reviewing: 'Our team is currently reviewing your message and will get back to you shortly to discuss how we can assist you.',
+        quote: '"Empowering global leaders through world-class educational consulting."'
+      },
+      tg: {
+        subject: 'Дархост қабул шуд - Salam Consulting',
+        hello: `Салом ${name.split(' ')[0]},`,
+        received: 'Ташаккур барои тамос бо <strong>Salam Consulting</strong>. Мо дархости шуморо бо муваффақият қабул кардем.',
+        reviewing: 'Гурӯҳи мо айни ҳол паёми шуморо баррасӣ дорад ва ба зудӣ бо шумо тамос хоҳад гирифт.',
+        quote: '"Омодасозии пешвоёни ҷаҳонӣ тавассути машваратҳои таълимии сатҳи олӣ."'
+      },
+      ru: {
+        subject: 'Запрос получен - Salam Consulting',
+        hello: `Здравствуйте ${name.split(' ')[0]},`,
+        received: 'Спасибо за обращение в <strong>Salam Consulting</strong>. Мы успешно получили ваш запрос.',
+        reviewing: 'Наша команда в настоящее время рассматривает ваше сообщение и свяжется с вами в ближайшее время.',
+        quote: '"Подготовка мировых лидеров через образовательный консалтинг мирового класса."'
+      }
+    };
+    const t = translations[locale] || translations.en;
+
     const userEmailPromise = resend.emails.send({
       from: fromEmail,
       to: email,
-      subject: `Inquiry Received - Salam Consulting`,
+      subject: t.subject,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 32px;">
@@ -100,22 +126,23 @@ export async function POST(req: Request) {
           </div>
           
           <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px;">
-            Hello ${name.split(' ')[0]},
+            ${t.hello}
           </h1>
           
           <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            Thank you for reaching out to <strong>Salam Consulting</strong>. We have successfully received your inquiry.
+            ${t.received}
           </p>
           
           <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 32px;">
-            Our team is currently reviewing your message and will get back to you shortly to discuss how we can assist you.
+            ${t.reviewing}
           </p>
           
           <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin-bottom: 32px; border-radius: 0 8px 8px 0;">
             <p style="margin: 0; color: #1e293b; font-size: 15px; font-style: italic;">
-              "Empowering global leaders through world-class educational consulting."
+              ${t.quote}
             </p>
           </div>
+
           
           <div style="margin-bottom: 40px;">
             <a href="https://www.salamconsultingedu.com" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 15px; display: inline-block;">

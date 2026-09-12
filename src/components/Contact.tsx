@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Mail, Send, CheckCircle2 } from 'lucide-react';
 
 export default function Contact() {
   const t = useTranslations('Contact');
+  const locale = useLocale();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -27,6 +28,7 @@ export default function Contact() {
       email: formData.get('email'),
       subject: formData.get('subject'),
       message: formData.get('message'),
+      locale: locale,
     };
 
     try {
