@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { PostHogProvider, PostHogPageview } from '@/lib/posthog';
+import { Suspense } from 'react';
 import "../globals.css";
 
 const geistSans = Geist({
@@ -88,13 +90,18 @@ export default async function RootLayout(
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-blue-600/30 selection:text-slate-900">
-        <NextIntlClientProvider messages={messages}>
-          <Navbar />
-          <div className="flex-grow">
-            {props.children}
-          </div>
-          <Footer />
-        </NextIntlClientProvider>
+        <PostHogProvider>
+          <Suspense fallback={null}>
+            <PostHogPageview />
+          </Suspense>
+          <NextIntlClientProvider messages={messages}>
+            <Navbar />
+            <div className="flex-grow">
+              {props.children}
+            </div>
+            <Footer />
+          </NextIntlClientProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

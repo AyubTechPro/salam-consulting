@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { supabase } from '@/lib/supabase';
 
-// Initialize Resend with the API key from environment variables.
-// If missing, it won't crash on boot, but will simulate sending.
+// Initialize Resend
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
@@ -19,44 +19,116 @@ export async function POST(req: Request) {
       );
     }
 
-    // In a development scenario without an API key, simulate success
-    // to keep the frontend working.
+    // Capture Advanced Metadata (Silicon Valley Style Analytics)
+    const userAgent = req.headers.get('user-agent') || 'Unknown';
+    // On Vercel, IP is often in x-forwarded-for or x-real-ip
+    const ipAddress = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Unknown';
+    const referrer = req.headers.get('referer') || 'Direct';
+
+    // 1. PUSH TO SUPABASE CRM (Silent fail if keys missing so app doesn't break)
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      const { error: dbError } = await supabase
+        .from('leads')
+        .insert([
+          {
+            name,
+            email,
+            subject,
+            message,
+            user_agent: userAgent,
+            ip_address: ipAddress,
+            referrer: referrer,
+            status: 'new'
+          }
+        ]);
+        
+      if (dbError) {
+        console.error('Supabase CRM Error:', dbError);
+        // We don't fail the request here, just log it.
+      }
+    } else {
+      console.log('Skipping Supabase insert: Missing API keys in .env');
+    }
+
+    // If no Resend API key, simulate success
     if (!resendApiKey || !resend) {
-      console.log('Simulating email send (No RESEND_API_KEY found):', { name, email, subject, message });
-      // Simulate network delay
+      console.log('Simulating email send (No RESEND_API_KEY found). Data:', { name, email, subject, message });
       await new Promise(resolve => setTimeout(resolve, 1500));
       return NextResponse.json({ success: true, simulated: true });
     }
 
-    // Use environment variables for email addresses or fallback to defaults
-    const fromEmail = process.env.EMAIL_FROM || 'Salam Consulting Contact <onboarding@resend.dev>';
+    const fromEmail = process.env.EMAIL_FROM || 'Salam Consulting <onboarding@resend.dev>';
     const toEmail = process.env.EMAIL_TO || 'info@salamconsultingedu.com';
 
-    const data = await resend.emails.send({
+    // 2. SEND NOTIFICATION TO ADMIN
+    const adminEmailPromise = resend.emails.send({
       from: fromEmail,
       to: toEmail,
       replyTo: email,
-      subject: `New Contact Request: ${subject || 'No Subject'}`,
+      subject: `New Lead 🔥: ${name} - ${subject || 'General Inquiry'}`,
       html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Subject:</strong> ${subject || 'N/A'}</p>
-        <br/>
-        <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br/>')}</p>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #2563eb;">New Lead Captured! 🚀</h2>
+          <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Subject:</strong> ${subject || 'N/A'}</p>
+          </div>
+          <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <p><strong>Message:</strong></p>
+            <p style="white-space: pre-wrap;">${message}</p>
+          </div>
+          <div style="font-size: 12px; color: #64748b; border-top: 1px solid #eee; padding-top: 15px;">
+            <p><strong>Smart Data (Analytics):</strong></p>
+            <p>IP: ${ipAddress}</p>
+            <p>Referrer: ${referrer}</p>
+            <p>Device: ${userAgent}</p>
+          </div>
+        </div>
       `,
     });
 
-    if (data.error) {
-      console.error('Resend API Error:', data.error);
+    // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER
+    const userEmailPromise = resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: `Welcome to Salam Consulting, ${name.split(' ')[0]}!`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px 20px; background-color: #ffffff;">
+          <h1 style="color: #0f172a; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px;">
+            Hello ${name.split(' ')[0]},
+          </h1>
+          <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Thank you for reaching out to Salam Consulting! We have successfully received your inquiry regarding studying abroad.
+          </p>
+          <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+            Our team of education experts will review your message and get back to you shortly to schedule your free consultation. We operate on Silicon Valley standards to ensure you get the absolute best guidance possible.
+          </p>
+          <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 16px 20px; margin-bottom: 30px;">
+            <p style="margin: 0; color: #475569; font-size: 14px; font-weight: 500;">
+              "Building global bridges through world-class education."
+            </p>
+          </div>
+          <p style="color: #334155; font-size: 16px; line-height: 1.6;">
+            Best regards,<br/>
+            <strong>The Salam Consulting Team</strong>
+          </p>
+        </div>
+      `,
+    });
+
+    // Run both emails in parallel for speed
+    const [adminResult, userResult] = await Promise.all([adminEmailPromise, userEmailPromise]);
+
+    if (adminResult.error || userResult.error) {
+      console.error('Resend API Error:', adminResult.error || userResult.error);
       return NextResponse.json(
         { error: 'Failed to send message via Resend' },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, adminResult, userResult });
   } catch (error) {
     console.error('Contact API Internal Error:', error);
     return NextResponse.json(
