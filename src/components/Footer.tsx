@@ -18,30 +18,19 @@ export default function Footer() {
               alt="Salam Consulting Logo" 
               width={240} 
               height={60}
-              className="h-12 w-auto mb-6 drop-shadow-sm"
+              className="h-10 md:h-12 w-auto mb-6 drop-shadow-sm"
             />
-            <p className="text-slate-600 font-normal leading-relaxed mb-6">
+            <p className="text-slate-600 text-[15px] font-normal leading-relaxed">
               Empowering your academic journey worldwide with professional consulting and personalized guidance.
             </p>
-            <div className="flex items-center gap-4 text-slate-500">
-              <a href="https://www.instagram.com/salamconsultingtj?igsh=MWl0ZGk4Zm94NmhpNw==" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </a>
-              <a href="https://www.linkedin.com/company/salamconsulting/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-              </a>
-              <a href="https://t.me/salamconsultingtj" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
-                <Send className="w-5 h-5" />
-              </a>
-            </div>
           </div>
 
           <div>
             <h3 className="text-slate-900 font-bold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-4">
-              <li><Link href="/" className="text-slate-600 hover:text-slate-900 transition-colors">{t('home')}</Link></li>
-              <li><Link href="/study-abroad" className="text-slate-600 hover:text-slate-900 transition-colors">{t('destinations')}</Link></li>
-              <li><Link href="/contact" className="text-slate-600 hover:text-slate-900 transition-colors">{t('contact')}</Link></li>
+              <li><Link href="/" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">{t('home')}</Link></li>
+              <li><Link href="/study-abroad" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">{t('destinations')}</Link></li>
+              <li><Link href="/contact" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">{t('contact')}</Link></li>
             </ul>
           </div>
 
@@ -80,10 +69,21 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-500 text-sm">
+        <div className="pt-8 border-t border-slate-200 flex flex-col-reverse md:flex-row items-center justify-between gap-6">
+          <p className="text-slate-500 text-[15px]">
             © {new Date().getFullYear()} Salam Consulting. All rights reserved.
           </p>
+          <div className="flex items-center gap-4 text-slate-500">
+            <a href="https://www.instagram.com/salamconsultingtj?igsh=MWl0ZGk4Zm94NmhpNw==" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/company/salamconsulting/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="https://t.me/salamconsultingtj" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm hover:shadow">
+              <Send className="w-5 h-5" />
+            </a>
+          </div>
         </div>
       </div>
     </footer>

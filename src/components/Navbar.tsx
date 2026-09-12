@@ -39,7 +39,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 bg-white/80 backdrop-blur-xl border-b border-slate-200">
       
       {/* Left: Logo (Large and Original) */}
-      <div className="flex items-center w-1/4">
+      <div className="flex items-center w-auto md:w-1/4">
         <Link href="/" className="hover:scale-[1.02] transition-transform">
           <Image 
             src="/logo/salamconsulting-logo-original.svg" 
@@ -66,7 +66,7 @@ export default function Navbar() {
       </div>
 
       {/* Right: Language Switcher & Mobile Menu */}
-      <div className="flex items-center justify-end gap-6 w-1/4">
+      <div className="flex items-center justify-end gap-4 sm:gap-6 w-auto md:w-1/4">
         {/* Premium Silicon Valley Language Switcher (Desktop) */}
         <div 
           className="relative hidden sm:block"
