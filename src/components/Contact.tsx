@@ -177,13 +177,16 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-2xl flex items-start gap-4 shadow-sm hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center shrink-0">
+            <div className="bg-white border border-blue-600/20 p-6 rounded-2xl flex items-start gap-4 shadow-[0_8px_30px_rgba(37,99,235,0.1)] hover:shadow-[0_8px_30px_rgba(37,99,235,0.2)] transition-shadow">
+              <div className="w-12 h-12 bg-blue-50 border border-blue-100 rounded-xl flex items-center justify-center shrink-0">
                 <Mail className="w-6 h-6 text-blue-600" />
               </div>
-              <div>
+              <div className="flex-1">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Email</h3>
-                <a href="mailto:info@salamconsultingedu.com" className="font-bold text-slate-900 hover:text-blue-600 transition-colors">info@salamconsultingedu.com</a>
+                <a href="mailto:info@salamconsultingedu.com" className="inline-block font-bold text-slate-900 hover:text-blue-600 transition-colors mb-2">info@salamconsultingedu.com</a>
+                <a href="mailto:info@salamconsultingedu.com" className="block text-center w-full bg-blue-600 text-white py-2 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-sm">
+                  Send Email
+                </a>
               </div>
             </div>
 
