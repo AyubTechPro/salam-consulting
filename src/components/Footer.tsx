@@ -54,7 +54,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3 text-slate-600">
                 <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                <a href="mailto:info@salamconsulting.com" className="hover:text-slate-900 transition-colors">info@salamconsulting.com</a>
+                <a href="mailto:info@salamconsultingedu.com" className="hover:text-slate-900 transition-colors">info@salamconsultingedu.com</a>
               </li>
               <li className="flex items-center gap-3 text-slate-600">
                 <svg className="w-5 h-5 text-[#25D366] flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">

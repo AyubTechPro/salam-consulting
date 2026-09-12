@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     // Use environment variables for email addresses or fallback to defaults
     const fromEmail = process.env.EMAIL_FROM || 'Salam Consulting Contact <onboarding@resend.dev>';
-    const toEmail = process.env.EMAIL_TO || 'info@salamconsulting.com';
+    const toEmail = process.env.EMAIL_TO || 'info@salamconsultingedu.com';
 
     const data = await resend.emails.send({
       from: fromEmail,

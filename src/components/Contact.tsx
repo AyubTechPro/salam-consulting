@@ -183,7 +183,7 @@ export default function Contact() {
               </div>
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Email</h3>
-                <a href="mailto:info@salamconsulting.com" className="font-bold text-slate-900 hover:text-blue-600 transition-colors">info@salamconsulting.com</a>
+                <a href="mailto:info@salamconsultingedu.com" className="font-bold text-slate-900 hover:text-blue-600 transition-colors">info@salamconsultingedu.com</a>
               </div>
             </div>
 
