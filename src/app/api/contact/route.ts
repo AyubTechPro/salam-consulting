@@ -88,30 +88,46 @@ export async function POST(req: Request) {
       `,
     });
 
-    // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER
+    // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER (Silicon Valley Standard)
     const userEmailPromise = resend.emails.send({
       from: fromEmail,
       to: email,
-      subject: `Welcome to Salam Consulting, ${name.split(' ')[0]}!`,
+      subject: `Inquiry Received - Salam Consulting`,
       html: `
-        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px 20px; background-color: #ffffff;">
-          <h1 style="color: #0f172a; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 24px;">
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <img src="https://www.salamconsultingedu.com/logo/salamconsulting-logo-original.png" alt="Salam Consulting Logo" width="180" style="display: block; margin: 0 auto;" />
+          </div>
+          
+          <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px;">
             Hello ${name.split(' ')[0]},
           </h1>
+          
           <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            Thank you for reaching out to Salam Consulting! We have successfully received your inquiry regarding studying abroad.
+            Thank you for connecting with <strong>Salam Consulting</strong>. We have successfully received your inquiry.
           </p>
-          <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
-            Our team of education experts will review your message and get back to you shortly to schedule your free consultation. We operate on Silicon Valley standards to ensure you get the absolute best guidance possible.
+          
+          <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 32px;">
+            Whether you are a prospective student, a university partner, or a potential investor, we value your interest. Our team is currently reviewing your message and will route it to the appropriate department. You can expect a personalized response from us very shortly.
           </p>
-          <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 16px 20px; margin-bottom: 30px;">
-            <p style="margin: 0; color: #475569; font-size: 14px; font-weight: 500;">
-              "Building global bridges through world-class education."
+          
+          <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin-bottom: 32px; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0; color: #1e293b; font-size: 15px; font-style: italic;">
+              "Empowering global leaders through world-class educational consulting."
             </p>
           </div>
-          <p style="color: #334155; font-size: 16px; line-height: 1.6;">
-            Best regards,<br/>
-            <strong>The Salam Consulting Team</strong>
+          
+          <div style="margin-bottom: 40px;">
+            <a href="https://www.salamconsultingedu.com" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 15px; display: inline-block;">
+              Visit Our Website
+            </a>
+          </div>
+          
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin-bottom: 24px;" />
+          
+          <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin: 0;">
+            Salam Consulting &bull; Headquartered in Dushanbe, Tajikistan<br/>
+            <a href="mailto:info@salamconsultingedu.com" style="color: #2563eb; text-decoration: none;">info@salamconsultingedu.com</a>
           </p>
         </div>
       `,
