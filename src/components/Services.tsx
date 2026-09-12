@@ -23,7 +23,7 @@ export default function Services() {
   };
 
   return (
-    <section className="py-32 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto bg-white w-full" id="services">
+    <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 max-w-[1400px] mx-auto bg-white w-full" id="services">
       
       <div className="max-w-3xl mb-24 mx-auto text-center">
         <motion.h2 
@@ -59,13 +59,13 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.7, ease: "easeOut" as const }}
-              className={`${service.size} group relative bg-white rounded-[2rem] border border-slate-100 overflow-hidden flex flex-col justify-between p-8 md:p-10 transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 ${service.hoverBorder} min-h-[280px] lg:min-h-[320px]`}
+              className={`${service.size} group relative bg-white rounded-[2rem] border border-slate-100 overflow-hidden flex flex-col justify-between p-6 md:p-10 transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] hover:-translate-y-1 ${service.hoverBorder} min-h-[280px] lg:min-h-[320px]`}
             >
               {/* Animated Background Glow on Hover */}
               <div className={`absolute inset-0 transition-colors duration-500 ease-out ${service.bgGlow}`} />
               
               {/* Corner Radial Gradient */}
-              <div className={`absolute top-0 right-0 w-[150%] h-[150%] -translate-y-1/2 translate-x-1/4 bg-gradient-to-bl ${service.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full blur-3xl pointer-events-none`} />
+              <div className={`absolute top-0 right-0 w-[150%] h-[150%] -translate-y-1/2 translate-x-1/4 bg-gradient-to-bl ${service.gradient} opacity-40 md:opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full blur-3xl pointer-events-none`} />
 
               {/* Icon & Number */}
               <div className="relative z-10 flex justify-between items-start mb-12">
@@ -90,7 +90,7 @@ export default function Services() {
               </div>
 
               {/* Massive background watermark icon */}
-              <div className="absolute -bottom-10 -right-10 text-slate-50 opacity-0 group-hover:opacity-50 transition-opacity duration-700 group-hover:scale-110 transform-gpu pointer-events-none">
+              <div className="absolute -bottom-10 -right-10 text-slate-50 opacity-10 md:opacity-0 group-hover:opacity-50 transition-opacity duration-700 group-hover:scale-110 transform-gpu pointer-events-none">
                 <Icon strokeWidth={0.5} className={isLarge ? "w-96 h-96" : "w-64 h-64"} />
               </div>
             </motion.div>

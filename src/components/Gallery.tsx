@@ -30,7 +30,7 @@ export default function Gallery() {
       <div className="absolute top-0 right-0 w-32 md:w-64 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
       {/* Event Gallery Marquee */}
-      <div className="flex w-[300%]">
+      <div className="flex w-max">
         <motion.div
           animate={{ x: ["-33.33%", "0%"] }}
           transition={{
@@ -53,8 +53,8 @@ export default function Gallery() {
                 sizes="(max-width: 768px) 300px, 450px"
                 className="object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent opacity-60 group-hover:opacity-20 transition-opacity duration-500" />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent opacity-60 md:opacity-0 md:group-hover:opacity-20 transition-opacity duration-500" />
+              <div className="absolute inset-0 hidden md:flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                  <div className="bg-white/90 backdrop-blur-sm text-slate-900 px-4 py-2 rounded-full font-bold text-sm shadow-lg">View</div>
               </div>
             </div>
@@ -73,7 +73,7 @@ export default function Gallery() {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 cursor-zoom-out"
           >
             <button 
-              className="absolute top-6 right-6 text-white hover:text-blue-400 transition-colors bg-white/10 rounded-full p-2 backdrop-blur-md"
+              className="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-blue-400 transition-colors bg-white/10 rounded-full p-4 backdrop-blur-md active:scale-95"
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedImage(null);

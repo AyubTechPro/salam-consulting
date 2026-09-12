@@ -18,7 +18,7 @@ export default function PartnerLogos() {
   const t = useTranslations('Partners');
 
   return (
-    <section className="py-20 w-full overflow-hidden bg-white relative border-t border-b border-slate-200" id="partners">
+    <section className="py-12 md:py-20 w-full overflow-hidden bg-white relative border-t border-b border-slate-200" id="partners">
       {/* Gradients on edges for smooth fading effect */}
       <div className="absolute top-0 left-0 w-32 md:w-64 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
       <div className="absolute top-0 right-0 w-32 md:w-64 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
@@ -31,7 +31,7 @@ export default function PartnerLogos() {
 
       <div className="flex flex-col gap-16">
         {/* Logos Marquee */}
-        <div className="flex w-[300%]">
+        <div className="flex w-max">
           <motion.div
             animate={{ x: ["0%", "-33.33%"] }}
             transition={{

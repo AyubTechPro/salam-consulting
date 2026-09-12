@@ -14,7 +14,7 @@ export default function About() {
   };
 
   return (
-    <div className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen bg-slate-50">
+    <div className="pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto min-h-screen bg-slate-50">
       
       {/* Header */}
       <div className="max-w-4xl mb-24">
@@ -22,7 +22,7 @@ export default function About() {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 mb-6 drop-shadow-sm"
+          className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-slate-900 mb-6 drop-shadow-sm"
         >
           {t('title')}
         </motion.h1>
@@ -46,7 +46,7 @@ export default function About() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUp}
-          className="md:col-span-1 p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group"
+          className="md:col-span-1 p-6 md:p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group"
         >
           <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm">
             <Target className="w-6 h-6 text-blue-600" />
@@ -62,7 +62,7 @@ export default function About() {
           viewport={{ once: true }}
           variants={fadeUp}
           transition={{ delay: 0.1 }}
-          className="md:col-span-1 p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group"
+          className="md:col-span-1 p-6 md:p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] group"
         >
           <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-sm">
             <Eye className="w-6 h-6 text-blue-600" />
@@ -78,7 +78,7 @@ export default function About() {
           viewport={{ once: true }}
           variants={fadeUp}
           transition={{ delay: 0.2 }}
-          className="md:col-span-1 md:row-span-2 p-10 rounded-3xl border border-slate-200 bg-slate-900 text-white relative overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all flex flex-col justify-between"
+          className="md:col-span-1 md:row-span-2 p-6 md:p-10 rounded-3xl border border-slate-200 bg-slate-900 text-white relative overflow-hidden group shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)] transition-all flex flex-col justify-between"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(37,99,235,0.3),transparent_50%)]" />
           <div className="relative z-10">
@@ -99,7 +99,7 @@ export default function About() {
           viewport={{ once: true }}
           variants={fadeUp}
           transition={{ delay: 0.3 }}
-          className="md:col-span-2 p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col justify-center"
+          className="md:col-span-2 p-6 md:p-10 rounded-3xl border border-slate-200 bg-white hover:bg-slate-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] flex flex-col justify-center"
         >
           <div className="flex items-center gap-4 mb-6">
             <div className="flex -space-x-4">
