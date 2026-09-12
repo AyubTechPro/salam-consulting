@@ -42,7 +42,7 @@ export default function Hero() {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none mix-blend-multiply" 
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] md:w-[600px] md:h-[300px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none mix-blend-multiply" 
       />
 
       <motion.div
@@ -63,7 +63,7 @@ export default function Hero() {
 
         <motion.h1 
           variants={item}
-          className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-center max-w-5xl leading-[1.05]"
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-center max-w-5xl leading-[1.1] sm:leading-[1.05] px-2"
         >
           <span className="text-transparent bg-clip-text bg-gradient-to-br from-slate-900 via-slate-800 to-slate-500 drop-shadow-sm">
             {t('title')}
@@ -79,18 +79,18 @@ export default function Hero() {
 
         <motion.div 
           variants={item}
-          className="mt-12 flex flex-col sm:flex-row items-center gap-4"
+          className="mt-12 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
           <Link 
             href="/contact" 
-            className="group relative flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-[0_0_0_1px_rgba(37,99,235,1)] hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)]"
+            className="w-full sm:w-auto group relative flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all shadow-[0_0_0_1px_rgba(37,99,235,1)] hover:shadow-[0_8px_20px_rgba(37,99,235,0.3)] active:scale-95"
           >
             {t('primaryBtn')} 
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
           <Link 
             href="/study-abroad" 
-            className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border border-slate-200 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-all w-full sm:w-auto shadow-sm hover:shadow-md"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-semibold border border-slate-200 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm hover:shadow-md active:scale-95"
           >
             {t('secondaryBtn')}
           </Link>

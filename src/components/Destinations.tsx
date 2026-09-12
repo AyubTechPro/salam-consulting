@@ -54,7 +54,7 @@ export default function Destinations() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUp}
-          className="text-5xl md:text-7xl font-black tracking-tighter text-slate-900 mb-6 drop-shadow-sm"
+          className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter text-slate-900 mb-6 drop-shadow-sm leading-tight"
         >
           {t('title')}
         </motion.h2>
@@ -70,7 +70,7 @@ export default function Destinations() {
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[400px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px] sm:auto-rows-[400px]">
         {destinationsData.map((dest, index) => (
           <motion.div
             key={dest.id}
@@ -91,16 +91,16 @@ export default function Destinations() {
             />
             
             {/* Dark Overlay that deepens on hover */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-90 sm:opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
 
             {/* Content overlay */}
-            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10">
-              <h3 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+            <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3 transform translate-y-0 sm:translate-y-4 sm:group-hover:translate-y-0 transition-transform duration-500">
                 {t(dest.id)}
               </h3>
               
               <div className="overflow-hidden">
-                <p className="text-white/90 text-lg font-medium leading-relaxed transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+                <p className="text-white/90 text-sm sm:text-lg font-medium leading-relaxed transform translate-y-0 opacity-100 sm:translate-y-full sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-500 sm:delay-100">
                   {dest.desc}
                 </p>
               </div>

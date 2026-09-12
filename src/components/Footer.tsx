@@ -9,9 +9,9 @@ export default function Footer() {
   const t = useTranslations('Navbar'); 
 
   return (
-    <footer className="bg-slate-50 pt-24 pb-12 border-t border-slate-200 relative overflow-hidden">
+    <footer className="bg-slate-50 pt-16 md:pt-24 pb-8 md:pb-12 border-t border-slate-200 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="md:col-span-1">
             <Image 
               src="/logo/salamconsulting-logo-original.svg" 

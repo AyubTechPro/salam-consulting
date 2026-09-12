@@ -111,10 +111,21 @@ export default function Navbar() {
 
         {/* Mobile Menu Toggle */}
         <button 
-          className="md:hidden p-2 text-slate-600 hover:text-slate-900 transition-colors"
+          className="md:hidden p-2 -mr-2 text-slate-600 hover:text-slate-900 transition-colors relative w-10 h-10 flex items-center justify-center"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={isMobileMenuOpen ? "close" : "open"}
+              initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </motion.div>
+          </AnimatePresence>
         </button>
       </div>
 
@@ -122,21 +133,22 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-2xl md:hidden flex flex-col"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-slate-200 shadow-2xl md:hidden overflow-hidden"
           >
-            <div className="p-6 flex flex-col gap-4">
+            <div className="p-6 flex flex-col gap-3">
               {navLinks.map((link) => (
                 <Link 
                   key={link.name} 
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-2xl font-bold text-slate-700 hover:text-slate-900 px-4 py-3 hover:bg-slate-50 rounded-2xl transition-colors flex items-center justify-between group"
+                  className="text-xl sm:text-2xl font-bold text-slate-700 hover:text-slate-900 px-4 py-4 hover:bg-slate-50 rounded-2xl transition-colors flex items-center justify-between group"
                 >
                   {link.name}
-                  <span className="text-slate-400 group-hover:text-slate-600 transition-colors">→</span>
+                  <span className="text-slate-300 group-hover:text-slate-500 transition-colors group-hover:translate-x-1 duration-300">→</span>
                 </Link>
               ))}
               
