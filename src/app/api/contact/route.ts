@@ -96,7 +96,7 @@ export async function POST(req: Request) {
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
           <div style="text-align: center; margin-bottom: 32px;">
-            <img src="https://www.salamconsultingedu.com/logo/salamconsulting-logo-original.png" alt="Salam Consulting Logo" width="180" style="display: block; margin: 0 auto;" />
+            <img src="https://www.salamconsultingedu.com/logo/salamconsulting-logo-original.png" alt="Salam Consulting Logo" width="280" style="display: block; margin: 0 auto;" />
           </div>
           
           <h1 style="color: #0f172a; font-size: 24px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 24px;">
@@ -104,11 +104,11 @@ export async function POST(req: Request) {
           </h1>
           
           <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-            Thank you for connecting with <strong>Salam Consulting</strong>. We have successfully received your inquiry.
+            Thank you for reaching out to <strong>Salam Consulting</strong>. We have successfully received your inquiry.
           </p>
           
           <p style="color: #334155; font-size: 16px; line-height: 1.6; margin-bottom: 32px;">
-            Whether you are a prospective student, a university partner, or a potential investor, we value your interest. Our team is currently reviewing your message and will route it to the appropriate department. You can expect a personalized response from us very shortly.
+            Our team is currently reviewing your message and will get back to you shortly to discuss how we can assist you.
           </p>
           
           <div style="background-color: #f8fafc; border-left: 4px solid #2563eb; padding: 20px; margin-bottom: 32px; border-radius: 0 8px 8px 0;">
