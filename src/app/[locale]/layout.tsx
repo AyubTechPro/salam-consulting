@@ -23,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale, namespace: 'Metadata' });
 
   return {
+    metadataBase: new URL('https://www.salamconsultingedu.com'),
     title: t('title'),
     description: t('description'),
     icons: {
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: t('title'),
       description: t('description'),
-      url: 'https://salamconsulting.com',
+      url: 'https://www.salamconsultingedu.com',
       siteName: 'Salam Consulting',
       images: [
         {
