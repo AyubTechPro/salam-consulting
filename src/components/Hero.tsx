@@ -51,15 +51,7 @@ export default function Hero() {
         variants={container}
         className="z-10 flex flex-col items-center w-full"
       >
-        <motion.div
-          variants={item}
-          className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-slate-200 bg-slate-50 backdrop-blur-md mb-8 hover:bg-slate-100 transition-colors shadow-sm"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-            {t('badge')}
-          </span>
-        </motion.div>
+
 
         <motion.h1 
           variants={item}

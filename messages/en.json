@@ -31,11 +31,17 @@
     "title": "Study Destinations",
     "subtitle": "We help students explore educational opportunities in:",
     "korea": "Korea",
+    "koreaDesc": "Experience world-class education amidst a vibrant mix of ancient tradition and futuristic technology.",
     "turkiye": "Türkiye",
+    "turkiyeDesc": "Study at the crossroads of Europe and Asia, where history and modern academia meet.",
     "malaysia": "Malaysia",
+    "malaysiaDesc": "A tropical hub for international students offering affordable, high-quality global degrees.",
     "china": "China",
+    "chinaDesc": "Immerse yourself in a rapidly growing academic powerhouse with vast scholarship opportunities.",
     "azerbaijan": "Azerbaijan",
+    "azerbaijanDesc": "Discover modern campuses in the Land of Fire, bridging Eastern and Western cultures.",
     "uzbekistan": "Uzbekistan",
+    "uzbekistanDesc": "Study in the historic heart of the Silk Road with rapidly expanding international partnerships.",
     "other": "Other Destinations"
   },
   "Partners": {

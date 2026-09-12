@@ -5,36 +5,12 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 const destinationsData = [
-  { 
-    id: 'korea', 
-    image: '/destinations/korea-v2.jpg',
-    desc: 'Experience world-class education amidst a vibrant mix of ancient tradition and futuristic technology.'
-  },
-  { 
-    id: 'turkiye', 
-    image: '/destinations/turkiye-v2.jpg',
-    desc: 'Study at the crossroads of Europe and Asia, where history and modern academia meet.'
-  },
-  { 
-    id: 'malaysia', 
-    image: '/destinations/malaysia-v2.jpg',
-    desc: 'A tropical hub for international students offering affordable, high-quality global degrees.'
-  },
-  { 
-    id: 'china', 
-    image: '/destinations/china-v2.jpg',
-    desc: 'Immerse yourself in a rapidly growing academic powerhouse with vast scholarship opportunities.'
-  },
-  { 
-    id: 'azerbaijan', 
-    image: '/destinations/azerbaijan-v2.jpg',
-    desc: 'Discover modern campuses in the Land of Fire, bridging Eastern and Western cultures.'
-  },
-  { 
-    id: 'uzbekistan', 
-    image: '/destinations/uzbekistan-v2.jpg',
-    desc: 'Study in the historic heart of the Silk Road with rapidly expanding international partnerships.'
-  },
+  { id: 'korea', image: '/destinations/korea-v2.jpg' },
+  { id: 'turkiye', image: '/destinations/turkiye-v2.jpg' },
+  { id: 'malaysia', image: '/destinations/malaysia-v2.jpg' },
+  { id: 'china', image: '/destinations/china-v2.jpg' },
+  { id: 'azerbaijan', image: '/destinations/azerbaijan-v2.jpg' },
+  { id: 'uzbekistan', image: '/destinations/uzbekistan-v2.jpg' },
 ];
 
 export default function Destinations() {
@@ -101,7 +77,7 @@ export default function Destinations() {
               
               <div className="overflow-hidden">
                 <p className="text-white/90 text-sm sm:text-lg font-medium leading-relaxed transform translate-y-0 opacity-100 sm:translate-y-full sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-500 sm:delay-100">
-                  {dest.desc}
+                  {t(`${dest.id}Desc`)}
                 </p>
               </div>
             </div>
