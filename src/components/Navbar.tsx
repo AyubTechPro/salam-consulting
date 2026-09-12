@@ -21,6 +21,10 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
 
+  if (pathname.includes('/admin')) {
+    return null;
+  }
+
   const currentLang = languages.find(l => l.code === locale) || languages.find(l => l.code === routing.defaultLocale) || languages[0];
 
   const changeLanguage = (locale: string) => {

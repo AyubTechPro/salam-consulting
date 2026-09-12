@@ -3,10 +3,15 @@
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { MapPin, Mail, Send } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { Link, usePathname } from '@/i18n/routing';
 
 export default function Footer() {
   const t = useTranslations('Navbar'); 
+  const pathname = usePathname();
+
+  if (pathname.includes('/admin')) {
+    return null;
+  } 
 
   return (
     <footer className="bg-slate-50 pt-16 md:pt-24 pb-8 md:pb-12 border-t border-slate-200 relative overflow-hidden">
