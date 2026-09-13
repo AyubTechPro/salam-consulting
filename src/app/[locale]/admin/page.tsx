@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase';
 import { Users, TrendingUp, Inbox } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import LeadsChart from '@/components/admin/LeadsChart';
 
 export const revalidate = 0; // Disable caching for the admin dashboard
 
@@ -57,6 +58,13 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
             </h3>
           </div>
         </div>
+      </div>
+
+      {/* Analytics Chart */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+        <h3 className="text-lg font-bold text-slate-800 mb-2">Lead Generation Overview</h3>
+        <p className="text-sm text-slate-500 font-medium">New inquiries over the last 7 days</p>
+        <LeadsChart leads={leads || []} />
       </div>
 
       {/* Recent Leads */}
