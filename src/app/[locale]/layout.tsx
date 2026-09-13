@@ -84,12 +84,58 @@ export default async function RootLayout(
   
   const messages = await getMessages();
 
+  // Structured Data (JSON-LD) for AIO and SEO
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Salam Consulting",
+    "url": "https://www.salamconsultingedu.com",
+    "logo": "https://www.salamconsultingedu.com/logo/salamconsulting-logo-original.svg",
+    "description": "Premium educational consulting, B2B university partnerships, and study abroad services in Tajikistan.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Rudaki Avenue 53",
+      "addressLocality": "Dushanbe",
+      "postalCode": "734001",
+      "addressCountry": "TJ"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+992940076006",
+      "contactType": "customer service",
+      "email": "info@salamconsultingedu.com",
+      "areaServed": ["TJ", "RU", "UZ", "KZ", "KG"],
+      "availableLanguage": ["English", "Russian", "Tajik"]
+    },
+    "sameAs": [
+      "https://www.instagram.com/salamconsultingtj",
+      "https://t.me/salamconsultingtj",
+      "https://www.linkedin.com/company/salamconsulting/"
+    ],
+    "makesOffer": [
+      {
+        "@type": "Offer",
+        "name": "Study Abroad Consulting",
+        "description": "Guidance for Tajik students to study in top universities worldwide."
+      },
+      {
+        "@type": "Offer",
+        "name": "B2B University Partnerships",
+        "description": "Collaboration with international universities for student recruitment."
+      }
+    ]
+  };
+
   return (
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-blue-600/30 selection:text-slate-900">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
         <PostHogProvider>
           <Suspense fallback={null}>
             <PostHogPageview />
