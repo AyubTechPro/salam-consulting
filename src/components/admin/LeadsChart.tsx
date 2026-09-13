@@ -10,7 +10,8 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { format, subDays, startOfDay, isSameDay } from 'date-fns';
+import { format, subDays, isSameDay } from 'date-fns';
+import { useTranslations } from 'next-intl';
 
 type Lead = {
   id: string;
@@ -19,6 +20,8 @@ type Lead = {
 };
 
 export default function LeadsChart({ leads }: { leads: Lead[] }) {
+  const t = useTranslations('Admin.dashboard');
+
   const data = useMemo(() => {
     // Generate the last 7 days
     const days = Array.from({ length: 7 }).map((_, i) => {
@@ -70,15 +73,15 @@ export default function LeadsChart({ leads }: { leads: Lead[] }) {
             allowDecimals={false}
           />
           <Tooltip 
-            contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }}
-            itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
+            contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 40px rgba(0,0,0,0.08)' }}
+            itemStyle={{ color: '#0f172a', fontWeight: '900', fontSize: '14px' }}
           />
           <Area 
             type="monotone" 
             dataKey="count" 
-            name="New Leads"
+            name={t('newLeads')}
             stroke="#2563eb" 
-            strokeWidth={3}
+            strokeWidth={4}
             fillOpacity={1} 
             fill="url(#colorCount)" 
           />

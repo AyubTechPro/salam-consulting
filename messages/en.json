@@ -83,5 +83,58 @@
   "Metadata": {
     "title": "Salam Consulting | Study Abroad & Education Agency",
     "description": "Salam Consulting provides professional education consulting services for students pursuing international study opportunities."
+  },
+  "Admin": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "leads": "Leads CRM",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "dashboard": {
+      "greeting": "Welcome back",
+      "overview": "Platform Overview",
+      "totalLeads": "Total Leads",
+      "newLeads": "New Leads",
+      "contacted": "Contacted",
+      "conversion": "Conversion Rate",
+      "smartInsights": "Smart Insights",
+      "insightsText": "You have {unread} new leads waiting for your response. Most of your recent traffic is looking for Study Abroad services.",
+      "chartTitle": "Lead Generation Overview",
+      "chartSubtitle": "New inquiries over the last 7 days",
+      "recentLeads": "Recent Leads",
+      "viewAll": "View all leads"
+    },
+    "leads": {
+      "title": "Leads CRM",
+      "subtitle": "Manage all student and partner inquiries",
+      "search": "Search by name or email...",
+      "filterStatus": "Filter by Status",
+      "allStatuses": "All Statuses",
+      "table": {
+        "client": "Client",
+        "service": "Service & Message",
+        "date": "Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "new": "New",
+        "contacted": "Contacted",
+        "enrolled": "Enrolled",
+        "rejected": "Rejected"
+      },
+      "empty": "No leads found matching your criteria."
+    },
+    "settings": {
+      "title": "System Settings",
+      "subtitle": "Manage your platform configuration",
+      "general": "General Configuration",
+      "emailNotifications": "Email Notifications",
+      "emailNotificationsDesc": "Receive emails when a new lead is submitted.",
+      "telegramAlerts": "Telegram Alerts",
+      "telegramAlertsDesc": "Instant Telegram bot notifications for new leads.",
+      "save": "Save Changes"
+    }
   }
 }
