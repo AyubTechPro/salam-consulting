@@ -131,11 +131,13 @@ export default async function RootLayout(
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-blue-600/30 selection:text-slate-900">
+      <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
+      </head>
+      <body className="min-h-full flex flex-col bg-white text-slate-900 font-sans selection:bg-blue-600/30 selection:text-slate-900">
         <PostHogProvider>
           <Suspense fallback={null}>
             <PostHogPageview />

@@ -63,6 +63,35 @@ export async function POST(req: Request) {
       console.log('Skipping Supabase insert: Missing API keys in .env');
     }
 
+    // 1.5. VIP TELEGRAM ALERTS (Corporate Telemetry)
+    const isVIP = email.endsWith('.edu') || email.includes('corporate') || email.includes('admin') || email.includes('ceo') || email.includes('university') || email.includes('stanford') || email.includes('harvard');
+    
+    if (isVIP) {
+      const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+      const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+      
+      const tgMessage = `🚨 *VIP B2B LEAD ALERT* 🚨\n\n*Name:* ${name}\n*Email:* ${email}\n*Subject:* ${subject || 'N/A'}\n*Location:* ${finalCity}, ${finalCountry}\n\n_This lead was flagged as a VIP Partner (University/Corporate). Please check the Admin Panel immediately._`;
+      
+      if (telegramToken && telegramChatId) {
+        try {
+          fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: telegramChatId,
+              text: tgMessage,
+              parse_mode: 'Markdown'
+            })
+          }).catch(e => console.error('Failed to send Telegram alert:', e));
+          console.log('VIP Telegram Alert Dispatched!');
+        } catch (e) {
+          console.error('Failed to send Telegram alert:', e);
+        }
+      } else {
+        console.log('VIP Lead Detected (Corporate Telemetry)! -> Add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID to .env to receive instant alerts on your phone.');
+      }
+    }
+
     // If no Resend API key, simulate success
     if (!resendApiKey || !resend) {
       console.log('Simulating email send (No RESEND_API_KEY found). Data:', { name, email, subject, message });
