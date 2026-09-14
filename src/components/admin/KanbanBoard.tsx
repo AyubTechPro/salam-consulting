@@ -27,12 +27,12 @@ type Lead = {
 };
 
 const COLUMNS = [
-  { id: 'new', title: 'New Leads', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  { id: 'contacted', title: 'Contacted', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { id: 'document_prep', title: 'Doc Prep', color: 'bg-purple-100 text-purple-700 border-purple-200' },
-  { id: 'applied', title: 'Applied', color: 'bg-indigo-100 text-indigo-700 border-indigo-200' },
-  { id: 'enrolled', title: 'Enrolled', color: 'bg-emerald-100 text-emerald-700 border-emerald-200' },
-  { id: 'rejected', title: 'Lost', color: 'bg-slate-100 text-slate-700 border-slate-200' }
+  { id: 'new', title: 'New Leads', color: 'bg-blue-50 text-blue-700 border-blue-200/50' },
+  { id: 'contacted', title: 'Contacted', color: 'bg-amber-50 text-amber-700 border-amber-200/50' },
+  { id: 'document_prep', title: 'Doc Prep', color: 'bg-purple-50 text-purple-700 border-purple-200/50' },
+  { id: 'applied', title: 'Applied', color: 'bg-indigo-50 text-indigo-700 border-indigo-200/50' },
+  { id: 'enrolled', title: 'Enrolled', color: 'bg-emerald-50 text-emerald-700 border-emerald-200/50' },
+  { id: 'rejected', title: 'Lost', color: 'bg-zinc-50 text-zinc-700 border-zinc-200/50' }
 ];
 
 export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
@@ -67,15 +67,15 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
 
   return (
     <div className="h-[calc(100vh-12rem)] flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <div className="relative w-72 group">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+      <div className="flex items-center justify-between mb-4">
+        <div className="relative w-full max-w-sm group">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-600 transition-colors" />
           <input 
             type="text" 
             placeholder="Search leads (Cmd+K)" 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200/60 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-sm shadow-sm"
+            className="w-full pl-9 pr-4 py-1.5 bg-white border border-zinc-200 rounded-md focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-all font-medium text-sm placeholder:text-zinc-400 shadow-sm"
           />
         </div>
       </div>
@@ -84,15 +84,15 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
         {COLUMNS.map(col => (
           <div 
             key={col.id} 
-            className="flex-shrink-0 w-80 flex flex-col bg-slate-100/50 rounded-2xl border border-slate-200/50 snap-center"
+            className="flex-shrink-0 w-80 flex flex-col bg-zinc-50/50 rounded-lg border border-zinc-200 snap-center"
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => handleDrop(e, col.id)}
           >
-            <div className="p-3 border-b border-slate-200/50 flex items-center justify-between">
-              <div className={`px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider border ${col.color}`}>
+            <div className="p-2 border-b border-zinc-200 flex items-center justify-between bg-zinc-50 rounded-t-lg">
+              <div className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${col.color}`}>
                 {col.title}
               </div>
-              <span className="text-xs font-bold text-slate-400">
+              <span className="text-xs font-medium text-zinc-400 mr-1">
                 {filteredLeads.filter(l => l.status === col.id).length}
               </span>
             </div>
@@ -104,17 +104,17 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
                   draggable
                   onDragStart={(e) => handleDragStart(e, lead.id)}
                   onClick={() => setSelectedLead(lead)}
-                  className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-200 cursor-grab active:cursor-grabbing transition-all"
+                  className="bg-white p-3 rounded-md border border-zinc-200 shadow-sm hover:border-zinc-300 cursor-grab active:cursor-grabbing transition-all group"
                 >
-                  <h4 className="font-bold text-slate-900 text-sm">{lead.name}</h4>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 font-medium">{lead.subject || lead.message}</p>
+                  <h4 className="font-semibold text-zinc-900 text-sm">{lead.name}</h4>
+                  <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">{lead.subject || lead.message}</p>
                   
                   <div className="mt-3 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1">
+                    <span className="text-[10px] text-zinc-400 font-medium flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {formatDistanceToNow(new Date(lead.created_at))} ago
+                      {formatDistanceToNow(new Date(lead.created_at))}
                     </span>
-                    <div className="w-5 h-5 rounded-full bg-slate-100 border border-white shadow-sm flex items-center justify-center text-[8px] font-black text-slate-600">
+                    <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[9px] font-semibold text-zinc-600">
                       {lead.name.charAt(0)}
                     </div>
                   </div>
@@ -141,24 +141,24 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 w-full md:w-[600px] h-full bg-white shadow-2xl z-[101] flex flex-col border-l border-slate-200"
+              className="fixed top-0 right-0 w-full md:w-[600px] h-full bg-white shadow-2xl z-[101] flex flex-col border-l border-zinc-200"
             >
-              <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+              <div className="p-5 border-b border-zinc-200 flex items-center justify-between bg-white sticky top-0 z-10">
                 <div>
-                  <h2 className="text-xl font-black text-slate-900">{selectedLead.name}</h2>
-                  <a href={`mailto:${selectedLead.email}`} className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1 mt-1">
-                    <Mail className="w-3 h-3" /> {selectedLead.email}
+                  <h2 className="text-lg font-semibold text-zinc-900">{selectedLead.name}</h2>
+                  <a href={`mailto:${selectedLead.email}`} className="text-sm text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1 mt-0.5">
+                    <Mail className="w-3.5 h-3.5" /> {selectedLead.email}
                   </a>
                 </div>
-                <button onClick={() => setSelectedLead(null)} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
-                  <X className="w-5 h-5" />
+                <button onClick={() => setSelectedLead(null)} className="p-1.5 hover:bg-zinc-100 rounded-md transition-colors text-zinc-400 hover:text-zinc-600">
+                  <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-8 bg-slate-50/50">
+              <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-[#FAFAFA]">
                 {/* Status Switcher inside Drawer */}
-                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Pipeline Stage</span>
+                <div className="bg-white p-3 rounded-lg border border-zinc-200 shadow-sm flex items-center justify-between">
+                  <span className="text-xs font-semibold text-zinc-500">Pipeline Stage</span>
                   <select 
                     value={selectedLead.status}
                     onChange={(e) => {
@@ -166,7 +166,7 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
                       setSelectedLead({...selectedLead, status: newStatus});
                       updateLeadStatus(selectedLead.id, newStatus);
                     }}
-                    className="bg-slate-100 border-none font-bold text-sm px-4 py-2 rounded-lg cursor-pointer outline-none focus:ring-2 focus:ring-blue-500"
+                    className="bg-zinc-50 border border-zinc-200 font-medium text-sm px-3 py-1.5 rounded-md cursor-pointer outline-none focus:ring-1 focus:ring-zinc-400"
                   >
                     {COLUMNS.map(col => (
                       <option key={col.id} value={col.id}>{col.title}</option>
