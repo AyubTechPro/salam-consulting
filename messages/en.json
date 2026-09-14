@@ -141,9 +141,11 @@
         "actions": "Actions"
       },
       "status": {
-        "new": "New",
+        "new": "New Inquiry",
         "contacted": "Contacted",
-        "enrolled": "Enrolled",
+        "meeting": "Meeting Scheduled",
+        "contract": "Contract Sent",
+        "mou": "MOU Signed",
         "rejected": "Rejected"
       },
       "empty": "No leads found matching your criteria."

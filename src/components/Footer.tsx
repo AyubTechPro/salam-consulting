@@ -39,7 +39,17 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-2">
+          <div>
+            <h3 className="text-slate-900 font-bold text-lg mb-6">Global Partners</h3>
+            <ul className="space-y-4">
+              <li><Link href="/partners/south-korea" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">Universities in South Korea</Link></li>
+              <li><Link href="/partners/malaysia" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">Universities in Malaysia</Link></li>
+              <li><Link href="/partners/usa" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">Universities in USA</Link></li>
+              <li><Link href="/partners/uk" className="text-slate-600 text-[15px] hover:text-slate-900 transition-colors">Universities in UK</Link></li>
+            </ul>
+          </div>
+
+          <div>
             <h3 className="text-slate-900 font-bold text-lg mb-6">{t('contact')}</h3>
             <ul className="space-y-4">
               <li className="text-slate-600">

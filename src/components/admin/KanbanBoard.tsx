@@ -69,9 +69,9 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
   const COLUMNS = [
     { id: 'new', title: tLeads('status.new'), color: 'bg-blue-50 text-blue-700 border-blue-200/50' },
     { id: 'contacted', title: tLeads('status.contacted'), color: 'bg-amber-50 text-amber-700 border-amber-200/50' },
-    { id: 'document_prep', title: 'Doc Prep', color: 'bg-purple-50 text-purple-700 border-purple-200/50' },
-    { id: 'applied', title: 'Applied', color: 'bg-indigo-50 text-indigo-700 border-indigo-200/50' },
-    { id: 'enrolled', title: tLeads('status.enrolled'), color: 'bg-emerald-50 text-emerald-700 border-emerald-200/50' },
+    { id: 'meeting', title: tLeads('status.meeting'), color: 'bg-purple-50 text-purple-700 border-purple-200/50' },
+    { id: 'contract', title: tLeads('status.contract'), color: 'bg-indigo-50 text-indigo-700 border-indigo-200/50' },
+    { id: 'mou', title: tLeads('status.mou'), color: 'bg-emerald-50 text-emerald-700 border-emerald-200/50' },
     { id: 'rejected', title: tLeads('status.rejected'), color: 'bg-zinc-50 text-zinc-700 border-zinc-200/50' }
   ];
 
@@ -108,15 +108,20 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
             </div>
             
             <div className="flex-1 p-2 space-y-2 overflow-y-auto">
-              {filteredLeads.filter(l => l.status === col.id).map(lead => (
+              {filteredLeads.filter(l => l.status === col.id).map(lead => {
+                const isVIP = lead.email.endsWith('.edu') || (lead.email.includes('corporate') || lead.email.includes('admin') || lead.email.includes('ceo'));
+                return (
                 <div 
                   key={lead.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, lead.id)}
                   onClick={() => setSelectedLead(lead)}
-                  className="bg-white p-3 rounded-md border border-zinc-200 shadow-sm hover:border-zinc-300 cursor-grab active:cursor-grabbing transition-all group"
+                  className={`bg-white p-3 rounded-md shadow-sm cursor-grab active:cursor-grabbing transition-all group border ${isVIP ? 'border-amber-300 shadow-amber-100/50' : 'border-zinc-200 hover:border-zinc-300'}`}
                 >
-                  <h4 className="font-semibold text-zinc-900 text-sm">{lead.name}</h4>
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-semibold text-zinc-900 text-sm truncate">{lead.name}</h4>
+                    {isVIP && <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[9px] font-bold uppercase rounded-sm border border-amber-200">VIP</span>}
+                  </div>
                   <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">{lead.subject || lead.message}</p>
                   
                   <div className="mt-3 flex items-center justify-between">
@@ -124,12 +129,12 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
                       <Clock className="w-3 h-3" />
                       {formatDistanceToNow(new Date(lead.created_at), { locale: dateLocale, addSuffix: true })}
                     </span>
-                    <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[9px] font-semibold text-zinc-600">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-semibold ${isVIP ? 'bg-amber-50 border border-amber-200 text-amber-600' : 'bg-zinc-100 border border-zinc-200 text-zinc-600'}`}>
                       {lead.name.charAt(0)}
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           </div>
         ))}
