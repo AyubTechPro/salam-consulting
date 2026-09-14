@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { supabase } from '@/lib/supabase';
-import { Search, Plus, Calendar, Clock, MapPin, Mail, AlignLeft, CheckSquare, X } from 'lucide-react';
+import { Search, Plus, Calendar, Clock, MapPin, Mail, AlignLeft, CheckSquare, X, Globe, Smartphone, Monitor, Compass, BarChart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 type Lead = {
@@ -15,6 +15,15 @@ type Lead = {
   status: string;
   created_at: string;
   ip_address: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  device_type?: string;
+  browser?: string;
+  os?: string;
+  country?: string;
+  city?: string;
+  referrer?: string;
 };
 
 const COLUMNS = [
@@ -175,7 +184,55 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
                     <p className="text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{selectedLead.message}</p>
                     <div className="mt-4 pt-4 border-t border-slate-100 text-xs font-bold text-slate-400 flex items-center justify-between">
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(new Date(selectedLead.created_at), 'PPP at p')}</span>
-                      <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> IP: {selectedLead.ip_address}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Telemetry & Analytics */}
+                <div>
+                  <h3 className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <BarChart className="w-4 h-4" /> Smart Telemetry (Silicon Valley Analytics)
+                  </h3>
+                  <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 p-2 bg-blue-100 text-blue-600 rounded-lg"><Compass className="w-4 h-4" /></div>
+                      <div>
+                        <p className="text-xs font-bold text-blue-800/60 uppercase">Traffic Source</p>
+                        <p className="text-sm font-bold text-slate-900 mt-0.5">
+                          {selectedLead.utm_source ? `Campaign: ${selectedLead.utm_source}` : 'Direct / Organic'}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500 truncate max-w-[150px]" title={selectedLead.referrer}>
+                          Ref: {selectedLead.referrer || 'None'}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 p-2 bg-purple-100 text-purple-600 rounded-lg">
+                        {selectedLead.device_type === 'Mobile' ? <Smartphone className="w-4 h-4" /> : <Monitor className="w-4 h-4" />}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-purple-800/60 uppercase">Device & OS</p>
+                        <p className="text-sm font-bold text-slate-900 mt-0.5">
+                          {selectedLead.device_type || 'Unknown'} - {selectedLead.os || 'Unknown OS'}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500">
+                          {selectedLead.browser || 'Unknown Browser'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 sm:col-span-2 border-t border-blue-100/50 pt-4 mt-2">
+                      <div className="mt-0.5 p-2 bg-emerald-100 text-emerald-600 rounded-lg"><Globe className="w-4 h-4" /></div>
+                      <div>
+                        <p className="text-xs font-bold text-emerald-800/60 uppercase">Location Data</p>
+                        <p className="text-sm font-bold text-slate-900 mt-0.5">
+                          {selectedLead.city !== 'Unknown' ? `${selectedLead.city}, ` : ''}{selectedLead.country || 'Unknown Location'}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500">
+                          IP: {selectedLead.ip_address}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Mail, Send, CheckCircle2 } from 'lucide-react';
@@ -11,6 +11,48 @@ export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [telemetry, setTelemetry] = useState<any>({});
+
+  useEffect(() => {
+    // Gather Telemetry Data on mount
+    const searchParams = new URLSearchParams(window.location.search);
+    const ua = navigator.userAgent;
+    
+    // Basic device detection
+    let device_type = 'Desktop';
+    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+      device_type = 'Mobile';
+    } else if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+      device_type = 'Tablet';
+    }
+
+    // Basic OS detection
+    let os = 'Unknown';
+    if (ua.indexOf('Win') !== -1) os = 'Windows';
+    if (ua.indexOf('Mac') !== -1) os = 'MacOS';
+    if (ua.indexOf('X11') !== -1) os = 'UNIX';
+    if (ua.indexOf('Linux') !== -1) os = 'Linux';
+    if (/Android/.test(ua)) os = 'Android';
+    if (/like Mac OS X/.test(ua)) os = 'iOS';
+
+    // Basic Browser detection
+    let browser = 'Unknown';
+    if (ua.indexOf('Chrome') !== -1) browser = 'Chrome';
+    else if (ua.indexOf('Safari') !== -1) browser = 'Safari';
+    else if (ua.indexOf('Firefox') !== -1) browser = 'Firefox';
+    else if (ua.indexOf('MSIE') !== -1 || !!document.documentMode === true) browser = 'IE';
+    else if (ua.indexOf('Edge') !== -1) browser = 'Edge';
+
+    setTelemetry({
+      utm_source: searchParams.get('utm_source') || null,
+      utm_medium: searchParams.get('utm_medium') || null,
+      utm_campaign: searchParams.get('utm_campaign') || null,
+      device_type,
+      browser,
+      os,
+      referrer: document.referrer || null,
+    });
+  }, []);
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -29,6 +71,7 @@ export default function Contact() {
       subject: formData.get('subject'),
       message: formData.get('message'),
       locale: locale,
+      telemetry: telemetry
     };
 
     try {

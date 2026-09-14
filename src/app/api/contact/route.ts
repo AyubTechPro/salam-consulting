@@ -9,7 +9,7 @@ const resend = resendApiKey ? new Resend(resendApiKey) : null;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, subject, message, locale = 'en' } = body;
+    const { name, email, subject, message, locale = 'en', telemetry = {} } = body;
 
     // Validate input fields
     if (!name || !email || !message) {
@@ -21,9 +21,14 @@ export async function POST(req: Request) {
 
     // Capture Advanced Metadata (Silicon Valley Style Analytics)
     const userAgent = req.headers.get('user-agent') || 'Unknown';
-    // On Vercel, IP is often in x-forwarded-for or x-real-ip
     const ipAddress = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'Unknown';
-    const referrer = req.headers.get('referer') || 'Direct';
+    const vercelCountry = req.headers.get('x-vercel-ip-country');
+    const vercelCity = req.headers.get('x-vercel-ip-city');
+    const backendReferrer = req.headers.get('referer') || 'Direct';
+
+    const finalReferrer = telemetry.referrer || backendReferrer;
+    const finalCountry = telemetry.country || vercelCountry || 'Unknown';
+    const finalCity = telemetry.city || vercelCity || 'Unknown';
 
     // 1. PUSH TO SUPABASE CRM (Silent fail if keys missing so app doesn't break)
     if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -37,8 +42,16 @@ export async function POST(req: Request) {
             message,
             user_agent: userAgent,
             ip_address: ipAddress,
-            referrer: referrer,
-            status: 'new'
+            referrer: finalReferrer,
+            status: 'new',
+            utm_source: telemetry.utm_source,
+            utm_medium: telemetry.utm_medium,
+            utm_campaign: telemetry.utm_campaign,
+            device_type: telemetry.device_type,
+            browser: telemetry.browser,
+            os: telemetry.os,
+            country: finalCountry,
+            city: finalCity
           }
         ]);
         
