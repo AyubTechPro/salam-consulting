@@ -2,15 +2,23 @@ import { supabase } from '@/lib/supabase';
 import { Users, TrendingUp, Inbox, Sparkles, ArrowUpRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import { enUS, tg, ru } from 'date-fns/locale';
 import LeadsChart from '@/components/admin/LeadsChart';
 import { getTranslations } from 'next-intl/server';
 
 export const revalidate = 0;
 
+const getLocaleObj = (localeCode: string) => {
+  if (localeCode === 'tg') return tg;
+  if (localeCode === 'ru') return ru;
+  return enUS;
+};
+
 export default async function AdminDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Admin.dashboard' });
   const tLeads = await getTranslations({ locale, namespace: 'Admin.leads' });
+  const dateLocale = getLocaleObj(locale);
   
   const { data: leads, error } = await supabase
     .from('leads')
@@ -119,7 +127,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
                     <h4 className="font-semibold text-zinc-900 text-sm truncate pr-2">{lead.name}</h4>
                     <span className="text-[10px] text-zinc-400 font-medium whitespace-nowrap flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {formatDistanceToNow(new Date(lead.created_at))}
+                      {formatDistanceToNow(new Date(lead.created_at), { locale: dateLocale, addSuffix: true })}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

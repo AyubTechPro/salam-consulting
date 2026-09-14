@@ -104,5 +104,117 @@
   "Metadata": {
     "title": "Salam Consulting | Обучение за рубежом",
     "description": "Salam Consulting предоставляет профессиональные консалтинговые услуги для студентов, стремящихся получить международное образование."
+  },
+  "Admin": {
+    "sidebar": {
+      "dashboard": "Дашборд",
+      "leads": "Клиенты (CRM)",
+      "content": "Контент (CMS)",
+      "settings": "Настройки",
+      "logout": "Выйти"
+    },
+    "dashboard": {
+      "greeting": "Добро пожаловать",
+      "overview": "Обзор платформы",
+      "totalLeads": "Всего клиентов",
+      "newLeads": "Новые клиенты",
+      "contacted": "Связались",
+      "conversion": "Конверсия",
+      "smartInsights": "Умная аналитика",
+      "insightsText": "У вас {unread} новых клиентов, ожидающих ответа. Большинство последних запросов касаются обучения за рубежом.",
+      "chartTitle": "Обзор генерации лидов",
+      "chartSubtitle": "Новые запросы за последние 7 дней",
+      "recentLeads": "Последние запросы",
+      "viewAll": "Смотреть всех"
+    },
+    "leads": {
+      "title": "Клиенты (CRM)",
+      "subtitle": "Управление всеми запросами и клиентами",
+      "search": "Поиск по имени или email...",
+      "filterStatus": "Фильтр по статусу",
+      "allStatuses": "Все статусы",
+      "table": {
+        "client": "Клиент",
+        "service": "Услуга и Сообщение",
+        "date": "Дата",
+        "status": "Статус",
+        "actions": "Действия"
+      },
+      "status": {
+        "new": "Новый",
+        "contacted": "Связались",
+        "enrolled": "Зачислен",
+        "rejected": "Отклонен"
+      },
+      "empty": "По вашему запросу ничего не найдено."
+    },
+    "content": {
+      "title": "Управление контентом",
+      "subtitle": "Управляйте контентом платформы напрямую, без изменения кода.",
+      "destinations": "Направления",
+      "partners": "Партнеры",
+      "addDestination": "Добавить направление",
+      "addPartner": "Добавить партнера",
+      "noDestinationsTitle": "Направления не найдены",
+      "noDestinationsDesc": "Добавьте направления здесь, чтобы управлять ими динамически.",
+      "noPartnersTitle": "Партнеры не найдены",
+      "noPartnersDesc": "Добавьте партнеров и университеты здесь."
+    },
+    "settings": {
+      "title": "Настройки системы",
+      "subtitle": "Управление центральной платформой",
+      "general": "Общие настройки",
+      "generalDesc": "Настройка глобальных уведомлений платформы",
+      "emailNotifications": "Уведомления по Email",
+      "emailNotificationsDesc": "Получать письма при поступлении новых запросов.",
+      "telegramAlerts": "Уведомления Telegram",
+      "telegramAlertsDesc": "Мгновенные уведомления о новых клиентах через бота Telegram.",
+      "connectBot": "Подключить бота",
+      "platformIntegrations": "Интеграции платформ",
+      "platformIntegrationsDesc": "Внешние сервисы, обеспечивающие работу вашего сайта.",
+      "supabaseCRM": "Supabase CRM",
+      "supabaseCRMDesc": "База данных для хранения клиентов.",
+      "resendEmails": "Resend Emails",
+      "resendEmailsDesc": "Доставка транзакционных писем.",
+      "posthog": "PostHog",
+      "posthogDesc": "Отслеживание поведения пользователей.",
+      "connected": "Подключено",
+      "save": "Сохранить изменения"
+    },
+    "kanban": {
+      "search": "Поиск клиентов (Cmd+K)...",
+      "pipelineStage": "Этап воронки",
+      "initialRequest": "Первоначальный запрос",
+      "internalNotes": "Внутренние заметки",
+      "internalNotesDesc": "Выполните SQL-схему для включения",
+      "addNote": "Добавить заметку",
+      "tasks": "Задачи",
+      "noPendingTasks": "Нет ожидающих задач",
+      "addTask": "Добавить задачу",
+      "smartTelemetry": "Умная телеметрия",
+      "trafficSource": "Источник трафика",
+      "campaign": "Кампания",
+      "directOrganic": "Прямой / Органический",
+      "ref": "Источник",
+      "deviceOS": "Устройство и ОС",
+      "locationData": "Данные о местоположении",
+      "ip": "IP",
+      "unknown": "Неизвестно",
+      "unknownLocation": "Неизвестное местоположение",
+      "unknownOS": "Неизвестная ОС",
+      "unknownBrowser": "Неизвестный браузер",
+      "mobile": "Мобильный",
+      "desktop": "Компьютер"
+    },
+    "command": {
+      "search": "Поиск...",
+      "typeCommand": "Введите команду или имя...",
+      "navigation": "Навигация",
+      "dashboard": "Дашборд",
+      "leads": "Клиенты (CRM)",
+      "content": "Контент (CMS)",
+      "settings": "Настройки",
+      "noResults": "Результаты не найдены."
+    }
   }
 }

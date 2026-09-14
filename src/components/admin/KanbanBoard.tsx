@@ -2,9 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
+import { enUS, tg, ru } from 'date-fns/locale';
 import { supabase } from '@/lib/supabase';
 import { Search, Plus, Calendar, Clock, MapPin, Mail, AlignLeft, CheckSquare, X, Globe, Smartphone, Monitor, Compass, BarChart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
+import { useParams } from 'next/navigation';
 
 type Lead = {
   id: string;
@@ -26,20 +29,22 @@ type Lead = {
   referrer?: string;
 };
 
-const COLUMNS = [
-  { id: 'new', title: 'New Leads', color: 'bg-blue-50 text-blue-700 border-blue-200/50' },
-  { id: 'contacted', title: 'Contacted', color: 'bg-amber-50 text-amber-700 border-amber-200/50' },
-  { id: 'document_prep', title: 'Doc Prep', color: 'bg-purple-50 text-purple-700 border-purple-200/50' },
-  { id: 'applied', title: 'Applied', color: 'bg-indigo-50 text-indigo-700 border-indigo-200/50' },
-  { id: 'enrolled', title: 'Enrolled', color: 'bg-emerald-50 text-emerald-700 border-emerald-200/50' },
-  { id: 'rejected', title: 'Lost', color: 'bg-zinc-50 text-zinc-700 border-zinc-200/50' }
-];
+const getLocaleObj = (localeCode: string) => {
+  if (localeCode === 'tg') return tg;
+  if (localeCode === 'ru') return ru;
+  return enUS;
+};
 
 export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   const [search, setSearch] = useState('');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Admin.kanban');
+  const tLeads = useTranslations('Admin.leads');
+  const params = useParams();
+  const localeStr = (params?.locale as string) || 'en';
+  const dateLocale = getLocaleObj(localeStr);
 
   const filteredLeads = leads.filter(l => 
     l.name.toLowerCase().includes(search.toLowerCase()) || 
@@ -57,13 +62,19 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
 
     const lead = leads.find(l => l.id === leadId);
     if (lead && lead.status !== newStatus) {
-      // Optimistic update
       setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-      
-      // Background save
       await supabase.from('leads').update({ status: newStatus }).eq('id', leadId);
     }
   };
+
+  const COLUMNS = [
+    { id: 'new', title: tLeads('status.new'), color: 'bg-blue-50 text-blue-700 border-blue-200/50' },
+    { id: 'contacted', title: tLeads('status.contacted'), color: 'bg-amber-50 text-amber-700 border-amber-200/50' },
+    { id: 'document_prep', title: 'Doc Prep', color: 'bg-purple-50 text-purple-700 border-purple-200/50' },
+    { id: 'applied', title: 'Applied', color: 'bg-indigo-50 text-indigo-700 border-indigo-200/50' },
+    { id: 'enrolled', title: tLeads('status.enrolled'), color: 'bg-emerald-50 text-emerald-700 border-emerald-200/50' },
+    { id: 'rejected', title: tLeads('status.rejected'), color: 'bg-zinc-50 text-zinc-700 border-zinc-200/50' }
+  ];
 
   return (
     <div className="h-[calc(100vh-12rem)] flex flex-col">
@@ -72,7 +83,7 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 group-focus-within:text-zinc-600 transition-colors" />
           <input 
             type="text" 
-            placeholder="Search leads (Cmd+K)" 
+            placeholder={t('search')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-1.5 bg-white border border-zinc-200 rounded-md focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition-all font-medium text-sm placeholder:text-zinc-400 shadow-sm"
@@ -112,7 +123,7 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
                   <div className="mt-3 flex items-center justify-between">
                     <span className="text-[10px] text-zinc-400 font-medium flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {formatDistanceToNow(new Date(lead.created_at))}
+                      {formatDistanceToNow(new Date(lead.created_at), { locale: dateLocale, addSuffix: true })}
                     </span>
                     <div className="w-5 h-5 rounded-full bg-zinc-100 border border-zinc-200 flex items-center justify-center text-[9px] font-semibold text-zinc-600">
                       {lead.name.charAt(0)}
@@ -133,7 +144,7 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-slate-900/20 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
               onClick={() => setSelectedLead(null)}
             />
             <motion.div 
@@ -158,7 +169,7 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
               <div className="flex-1 overflow-y-auto p-5 space-y-6 bg-[#FAFAFA]">
                 {/* Status Switcher inside Drawer */}
                 <div className="bg-white p-3 rounded-lg border border-zinc-200 shadow-sm flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-500">Pipeline Stage</span>
+                  <span className="text-xs font-semibold text-zinc-500">{t('pipelineStage')}</span>
                   <select 
                     value={selectedLead.status}
                     onChange={(e) => {
@@ -176,85 +187,85 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
 
                 {/* Initial Request */}
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <AlignLeft className="w-4 h-4" /> Initial Request
+                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <AlignLeft className="w-3.5 h-3.5" /> {t('initialRequest')}
                   </h3>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <p className="text-sm font-bold text-slate-800 mb-2">{selectedLead.subject}</p>
-                    <p className="text-sm text-slate-600 font-medium leading-relaxed whitespace-pre-wrap">{selectedLead.message}</p>
-                    <div className="mt-4 pt-4 border-t border-slate-100 text-xs font-bold text-slate-400 flex items-center justify-between">
-                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(new Date(selectedLead.created_at), 'PPP at p')}</span>
+                  <div className="bg-white p-5 rounded-lg border border-zinc-200 shadow-sm">
+                    <p className="text-sm font-semibold text-zinc-900 mb-2">{selectedLead.subject}</p>
+                    <p className="text-sm text-zinc-600 font-medium leading-relaxed whitespace-pre-wrap">{selectedLead.message}</p>
+                    <div className="mt-4 pt-4 border-t border-zinc-100 text-xs font-medium text-zinc-400 flex items-center justify-between">
+                      <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {format(new Date(selectedLead.created_at), 'PPP at p', { locale: dateLocale })}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Telemetry & Analytics */}
                 <div>
-                  <h3 className="text-xs font-bold text-blue-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                    <BarChart className="w-4 h-4" /> Smart Telemetry (Silicon Valley Analytics)
+                  <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                    <BarChart className="w-3.5 h-3.5" /> {t('smartTelemetry')}
                   </h3>
-                  <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-100 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="bg-white p-5 rounded-lg border border-zinc-200 shadow-sm grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-2 bg-blue-100 text-blue-600 rounded-lg"><Compass className="w-4 h-4" /></div>
+                      <div className="mt-0.5 p-1.5 bg-zinc-100 text-zinc-600 rounded-md"><Compass className="w-4 h-4" /></div>
                       <div>
-                        <p className="text-xs font-bold text-blue-800/60 uppercase">Traffic Source</p>
-                        <p className="text-sm font-bold text-slate-900 mt-0.5">
-                          {selectedLead.utm_source ? `Campaign: ${selectedLead.utm_source}` : 'Direct / Organic'}
+                        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">{t('trafficSource')}</p>
+                        <p className="text-sm font-medium text-zinc-900 mt-0.5">
+                          {selectedLead.utm_source ? `${t('campaign')}: ${selectedLead.utm_source}` : t('directOrganic')}
                         </p>
-                        <p className="text-xs font-medium text-slate-500 truncate max-w-[150px]" title={selectedLead.referrer}>
-                          Ref: {selectedLead.referrer || 'None'}
+                        <p className="text-xs font-medium text-zinc-400 truncate max-w-[150px]" title={selectedLead.referrer}>
+                          {t('ref')}: {selectedLead.referrer || t('unknown')}
                         </p>
                       </div>
                     </div>
                     
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-2 bg-purple-100 text-purple-600 rounded-lg">
+                      <div className="mt-0.5 p-1.5 bg-zinc-100 text-zinc-600 rounded-md">
                         {selectedLead.device_type === 'Mobile' ? <Smartphone className="w-4 h-4" /> : <Monitor className="w-4 h-4" />}
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-purple-800/60 uppercase">Device & OS</p>
-                        <p className="text-sm font-bold text-slate-900 mt-0.5">
-                          {selectedLead.device_type || 'Unknown'} - {selectedLead.os || 'Unknown OS'}
+                        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">{t('deviceOS')}</p>
+                        <p className="text-sm font-medium text-zinc-900 mt-0.5">
+                          {selectedLead.device_type === 'Mobile' ? t('mobile') : (selectedLead.device_type === 'Desktop' ? t('desktop') : (selectedLead.device_type || t('unknown')))} - {selectedLead.os || t('unknownOS')}
                         </p>
-                        <p className="text-xs font-medium text-slate-500">
-                          {selectedLead.browser || 'Unknown Browser'}
+                        <p className="text-xs font-medium text-zinc-400">
+                          {selectedLead.browser || t('unknownBrowser')}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-start gap-3 sm:col-span-2 border-t border-blue-100/50 pt-4 mt-2">
-                      <div className="mt-0.5 p-2 bg-emerald-100 text-emerald-600 rounded-lg"><Globe className="w-4 h-4" /></div>
+                    <div className="flex items-start gap-3 sm:col-span-2 border-t border-zinc-100 pt-4 mt-2">
+                      <div className="mt-0.5 p-1.5 bg-zinc-100 text-zinc-600 rounded-md"><Globe className="w-4 h-4" /></div>
                       <div>
-                        <p className="text-xs font-bold text-emerald-800/60 uppercase">Location Data</p>
-                        <p className="text-sm font-bold text-slate-900 mt-0.5">
-                          {selectedLead.city !== 'Unknown' ? `${selectedLead.city}, ` : ''}{selectedLead.country || 'Unknown Location'}
+                        <p className="text-xs font-semibold text-zinc-500 uppercase tracking-wide">{t('locationData')}</p>
+                        <p className="text-sm font-medium text-zinc-900 mt-0.5">
+                          {selectedLead.city !== 'Unknown' && selectedLead.city ? `${selectedLead.city}, ` : ''}{selectedLead.country || t('unknownLocation')}
                         </p>
-                        <p className="text-xs font-medium text-slate-500">
-                          IP: {selectedLead.ip_address}
+                        <p className="text-xs font-medium text-zinc-400">
+                          {t('ip')}: {selectedLead.ip_address}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Notes & Tasks Placeholder (To be wired with Supabase) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Notes & Tasks - Restored Feature */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <AlignLeft className="w-4 h-4" /> Internal Notes
+                    <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <AlignLeft className="w-3.5 h-3.5" /> {t('internalNotes')}
                     </h3>
-                    <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-200 shadow-sm text-sm font-medium text-yellow-800 text-center h-32 flex flex-col items-center justify-center">
-                      <p>Run SQL Schema to enable</p>
-                      <button className="mt-2 text-xs font-bold bg-yellow-200 px-3 py-1 rounded-full hover:bg-yellow-300">Add Note</button>
+                    <div className="bg-yellow-50/50 p-4 rounded-lg border border-yellow-200/60 shadow-sm text-sm font-medium text-yellow-800/80 text-center h-28 flex flex-col items-center justify-center">
+                      <p>{t('internalNotesDesc')}</p>
+                      <button className="mt-2 text-xs font-semibold bg-yellow-100/80 px-3 py-1.5 rounded-md hover:bg-yellow-200/80 text-yellow-900 transition-colors border border-yellow-200">{t('addNote')}</button>
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <CheckSquare className="w-4 h-4" /> Tasks
+                    <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <CheckSquare className="w-3.5 h-3.5" /> {t('tasks')}
                     </h3>
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-sm font-medium text-slate-500 text-center h-32 flex flex-col items-center justify-center">
-                      <p>No pending tasks</p>
-                      <button className="mt-2 text-xs font-bold bg-slate-100 px-3 py-1 rounded-full hover:bg-slate-200 text-slate-700">Add Task</button>
+                    <div className="bg-white p-4 rounded-lg border border-zinc-200 shadow-sm text-sm font-medium text-zinc-400 text-center h-28 flex flex-col items-center justify-center">
+                      <p>{t('noPendingTasks')}</p>
+                      <button className="mt-2 text-xs font-semibold bg-zinc-100 px-3 py-1.5 rounded-md hover:bg-zinc-200 text-zinc-700 transition-colors border border-zinc-200">{t('addTask')}</button>
                     </div>
                   </div>
                 </div>

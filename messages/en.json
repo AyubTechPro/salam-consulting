@@ -18,13 +18,34 @@
     "title": "Our Services",
     "subtitle": "Comprehensive support for your international education journey",
     "items": {
-      "consultation": { "title": "1. Consultation", "description": "Personalized guidance based on the student's academic background, goals, budget, and preferred destination." },
-      "selection": { "title": "2. University Selection", "description": "Helping students identify suitable universities and programs." },
-      "admission": { "title": "3. Admission & Application", "description": "Guidance throughout the university application and admission process." },
-      "documentation": { "title": "4. Documentation", "description": "Assistance with preparing and organizing required documents." },
-      "scholarship": { "title": "5. Scholarship Guidance", "description": "Helping students identify and apply for relevant scholarship opportunities." },
-      "visa": { "title": "6. Visa Assistance", "description": "Guidance and support throughout the visa preparation process." },
-      "predeparture": { "title": "7. Pre-departure Support", "description": "Helping students prepare for their journey and transition to studying abroad." }
+      "consultation": {
+        "title": "1. Consultation",
+        "description": "Personalized guidance based on the student's academic background, goals, budget, and preferred destination."
+      },
+      "selection": {
+        "title": "2. University Selection",
+        "description": "Helping students identify suitable universities and programs."
+      },
+      "admission": {
+        "title": "3. Admission & Application",
+        "description": "Guidance throughout the university application and admission process."
+      },
+      "documentation": {
+        "title": "4. Documentation",
+        "description": "Assistance with preparing and organizing required documents."
+      },
+      "scholarship": {
+        "title": "5. Scholarship Guidance",
+        "description": "Helping students identify and apply for relevant scholarship opportunities."
+      },
+      "visa": {
+        "title": "6. Visa Assistance",
+        "description": "Guidance and support throughout the visa preparation process."
+      },
+      "predeparture": {
+        "title": "7. Pre-departure Support",
+        "description": "Helping students prepare for their journey and transition to studying abroad."
+      }
     }
   },
   "Destinations": {
@@ -135,7 +156,65 @@
       "emailNotificationsDesc": "Receive emails when a new lead is submitted.",
       "telegramAlerts": "Telegram Alerts",
       "telegramAlertsDesc": "Instant Telegram bot notifications for new leads.",
-      "save": "Save Changes"
+      "save": "Save Changes",
+      "generalDesc": "Configure global platform notifications",
+      "connectBot": "Connect Bot",
+      "platformIntegrations": "Platform Integrations",
+      "platformIntegrationsDesc": "External services powering your site.",
+      "supabaseCRM": "Supabase CRM",
+      "supabaseCRMDesc": "Database for storing leads.",
+      "resendEmails": "Resend Emails",
+      "resendEmailsDesc": "Transactional email delivery.",
+      "posthog": "PostHog",
+      "posthogDesc": "User behavior tracking.",
+      "connected": "Connected"
+    },
+    "content": {
+      "title": "Content Management",
+      "subtitle": "Manage platform content directly without editing code.",
+      "destinations": "Destinations",
+      "partners": "Partners",
+      "addDestination": "Add Destination",
+      "addPartner": "Add Partner",
+      "noDestinationsTitle": "No Destinations Found",
+      "noDestinationsDesc": "Add destinations here to override and manage them dynamically. Requires SQL schema execution.",
+      "noPartnersTitle": "No Partners Found",
+      "noPartnersDesc": "Add university or corporate partners here to display them globally on the platform."
+    },
+    "kanban": {
+      "search": "Search leads (Cmd+K)...",
+      "pipelineStage": "Pipeline Stage",
+      "initialRequest": "Initial Request",
+      "internalNotes": "Internal Notes",
+      "internalNotesDesc": "Run SQL Schema to enable",
+      "addNote": "Add Note",
+      "tasks": "Tasks",
+      "noPendingTasks": "No pending tasks",
+      "addTask": "Add Task",
+      "smartTelemetry": "Smart Telemetry",
+      "trafficSource": "Traffic Source",
+      "campaign": "Campaign",
+      "directOrganic": "Direct / Organic",
+      "ref": "Ref",
+      "deviceOS": "Device & OS",
+      "locationData": "Location Data",
+      "ip": "IP",
+      "unknown": "Unknown",
+      "unknownLocation": "Unknown Location",
+      "unknownOS": "Unknown OS",
+      "unknownBrowser": "Unknown Browser",
+      "mobile": "Mobile",
+      "desktop": "Desktop"
+    },
+    "command": {
+      "search": "Search...",
+      "typeCommand": "Type a command or search...",
+      "navigation": "Navigation",
+      "dashboard": "Dashboard",
+      "leads": "Leads (CRM)",
+      "content": "Content (CMS)",
+      "settings": "Settings",
+      "noResults": "No results found."
     }
   }
 }
