@@ -2,15 +2,14 @@ import { supabase } from '@/lib/supabase';
 import { Users, TrendingUp, Inbox, Sparkles, ArrowUpRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { enUS, tg, ru } from 'date-fns/locale';
+import { enUS, ru } from 'date-fns/locale';
 import LeadsChart from '@/components/admin/LeadsChart';
 import { getTranslations } from 'next-intl/server';
 
 export const revalidate = 0;
 
 const getLocaleObj = (localeCode: string) => {
-  if (localeCode === 'tg') return tg;
-  if (localeCode === 'ru') return ru;
+  if (localeCode === 'ru' || localeCode === 'tg') return ru;
   return enUS;
 };
 

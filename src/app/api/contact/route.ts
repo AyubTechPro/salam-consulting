@@ -94,7 +94,7 @@ export async function POST(req: Request) {
           <div style="font-size: 12px; color: #64748b; border-top: 1px solid #eee; padding-top: 15px;">
             <p><strong>Smart Data (Analytics):</strong></p>
             <p>IP: ${ipAddress}</p>
-            <p>Referrer: ${referrer}</p>
+            <p>Referrer: ${finalReferrer}</p>
             <p>Device: ${userAgent}</p>
           </div>
         </div>

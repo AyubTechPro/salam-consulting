@@ -40,7 +40,7 @@ export default function Contact() {
     if (ua.indexOf('Chrome') !== -1) browser = 'Chrome';
     else if (ua.indexOf('Safari') !== -1) browser = 'Safari';
     else if (ua.indexOf('Firefox') !== -1) browser = 'Firefox';
-    else if (ua.indexOf('MSIE') !== -1 || !!document.documentMode === true) browser = 'IE';
+    else if (ua.indexOf('MSIE') !== -1 || !!(document as any).documentMode === true) browser = 'IE';
     else if (ua.indexOf('Edge') !== -1) browser = 'Edge';
 
     setTelemetry({

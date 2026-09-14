@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { formatDistanceToNow, format } from 'date-fns';
-import { enUS, tg, ru } from 'date-fns/locale';
+import { enUS, ru } from 'date-fns/locale';
 import { supabase } from '@/lib/supabase';
 import { Search, Plus, Calendar, Clock, MapPin, Mail, AlignLeft, CheckSquare, X, Globe, Smartphone, Monitor, Compass, BarChart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,8 +30,7 @@ type Lead = {
 };
 
 const getLocaleObj = (localeCode: string) => {
-  if (localeCode === 'tg') return tg;
-  if (localeCode === 'ru') return ru;
+  if (localeCode === 'ru' || localeCode === 'tg') return ru;
   return enUS;
 };
 
