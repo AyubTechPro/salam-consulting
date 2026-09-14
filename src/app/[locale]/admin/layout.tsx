@@ -4,8 +4,9 @@ import { useState } from 'react';
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Users, Settings, LogOut, Menu, Globe, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Menu, Globe, ShieldCheck, FileText } from 'lucide-react';
 import Link from 'next/link';
+import { CommandPalette } from '@/components/admin/CommandPalette';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { name: t('dashboard'), href: `/${locale}/admin`, icon: LayoutDashboard },
     { name: t('leads'), href: `/${locale}/admin/leads`, icon: Users },
+    { name: t('content') || 'Content', href: `/${locale}/admin/content`, icon: FileText },
     { name: t('settings'), href: `/${locale}/admin/settings`, icon: Settings },
   ];
 
@@ -129,12 +131,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <Menu className="w-5 h-5" />
             </button>
-            <h2 className="text-lg font-bold text-slate-800 tracking-tight">
+            <h2 className="text-lg font-bold text-slate-800 tracking-tight hidden sm:block">
               {navItems.find(item => item.href === pathname)?.name || 'Dashboard'}
             </h2>
           </div>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 md:gap-6">
+            <CommandPalette />
+            
             {/* Language Switcher */}
             <div className="flex items-center gap-2 bg-slate-100/80 p-1 rounded-full border border-slate-200/50">
               <button 
