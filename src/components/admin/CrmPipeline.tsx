@@ -136,7 +136,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
           />
         </div>
         <div className="text-xs font-semibold text-zinc-500">
-          {filteredLeads.length} leads
+          {tLeads('leadsCount', { count: filteredLeads.length })}
         </div>
       </div>
 
@@ -146,7 +146,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
         <div className="grid grid-cols-12 gap-4 px-6 py-3 border-b border-zinc-100 bg-zinc-50/80 backdrop-blur-sm text-xs font-semibold text-zinc-500 uppercase tracking-wider">
           <div className="col-span-4">{tLeads('table.client')}</div>
           <div className="col-span-3">{tLeads('table.status')}</div>
-          <div className="col-span-3">Telemetry</div>
+          <div className="col-span-3">{tLeads('table.telemetry')}</div>
           <div className="col-span-2 text-right">{tLeads('table.date')}</div>
         </div>
 
@@ -169,7 +169,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <h4 className="text-sm font-bold text-zinc-900 truncate">{lead.name}</h4>
-                      {vip && <span className="shrink-0 px-1.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[9px] font-black uppercase rounded tracking-widest shadow-sm">VIP</span>}
+                      {vip && <span className="shrink-0 px-1.5 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[9px] font-black uppercase rounded tracking-widest shadow-sm">{tLeads('vipClient')}</span>}
                     </div>
                     <div className="flex items-center gap-1.5 mt-0.5 opacity-70 group-hover:opacity-100 transition-opacity">
                       <Mail className="w-3 h-3 text-zinc-400 shrink-0" />
@@ -229,7 +229,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
               <div className="w-12 h-12 bg-zinc-50 rounded-full flex items-center justify-center">
                 <Search className="w-5 h-5 text-zinc-300" />
               </div>
-              <p className="text-sm font-medium">No clients found matching your search.</p>
+              <p className="text-sm font-medium">{tLeads('noClientsFound')}</p>
             </div>
           )}
         </div>
@@ -276,12 +276,12 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                         <h2 
                           onClick={() => { setEditNameValue(selectedLead.name); setIsEditingName(true); }}
                           className="text-xl font-bold text-zinc-900 tracking-tight cursor-pointer hover:bg-zinc-50 rounded px-1 -ml-1 transition-colors border border-transparent hover:border-zinc-200"
-                          title="Click to edit"
+                          title={t('clickToEdit')}
                         >
                           {selectedLead.name}
                         </h2>
                       )}
-                      {isVIP(selectedLead.email) && <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase rounded tracking-widest shadow-sm">VIP Client</span>}
+                      {isVIP(selectedLead.email) && <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase rounded tracking-widest shadow-sm">{tLeads('vipClient')}</span>}
                     </div>
                     
                     {/* Quick Actions Bar */}
@@ -293,7 +293,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                         onClick={() => { navigator.clipboard.writeText(selectedLead.email); }}
                         className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 bg-zinc-50 hover:bg-zinc-100 px-2.5 py-1 rounded-md transition-colors border border-zinc-200"
                       >
-                        Copy Email
+                        {tLeads('copyEmail')}
                       </button>
                     </div>
                   </div>
@@ -349,12 +349,12 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                         <div className="p-4 flex items-start gap-3 hover:bg-zinc-50/50 transition-colors">
                           <div className="mt-0.5 p-2 bg-amber-50 text-amber-600 rounded-lg ring-1 ring-amber-100"><Compass className="w-4 h-4" /></div>
                           <div>
-                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('trafficSource') || 'Acquisition'}</p>
+                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('trafficSource')}</p>
                             <p className="text-sm font-bold text-zinc-900">
-                              {selectedLead.utm_source ? `${selectedLead.utm_source}` : (t('directOrganic') || 'Direct / Organic')}
+                              {selectedLead.utm_source ? `${selectedLead.utm_source}` : t('directOrganic')}
                             </p>
                             <p className="text-xs font-semibold text-zinc-500 mt-1 truncate max-w-[150px]" title={selectedLead.referrer}>
-                              {selectedLead.referrer || 'No referrer'}
+                              {selectedLead.referrer || t('unknown')}
                             </p>
                           </div>
                         </div>
@@ -365,12 +365,12 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                             {selectedLead.device_type === 'Mobile' ? <Smartphone className="w-4 h-4" /> : <Monitor className="w-4 h-4" />}
                           </div>
                           <div>
-                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('deviceOS') || 'Device & OS'}</p>
+                            <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('deviceOS')}</p>
                             <p className="text-sm font-bold text-zinc-900">
-                              {selectedLead.device_type || 'Unknown'} - {selectedLead.os || 'Unknown'}
+                              {selectedLead.device_type === 'Mobile' ? t('mobile') : (selectedLead.device_type === 'Desktop' ? t('desktop') : (selectedLead.device_type || t('unknown')))} - {selectedLead.os || t('unknownOS')}
                             </p>
                             <p className="text-xs font-semibold text-zinc-500 mt-1">
-                              {selectedLead.browser || 'Unknown browser'}
+                              {selectedLead.browser || t('unknownBrowser')}
                             </p>
                           </div>
                         </div>
@@ -380,12 +380,12 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                       <div className="p-4 border-t border-zinc-100 flex items-start gap-3 hover:bg-zinc-50/50 transition-colors bg-zinc-50/30">
                         <div className="mt-0.5 p-2 bg-blue-50 text-blue-600 rounded-lg ring-1 ring-blue-100"><Globe className="w-4 h-4" /></div>
                         <div>
-                          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('locationData') || 'Geo-Location'}</p>
+                          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{t('locationData')}</p>
                           <p className="text-sm font-bold text-zinc-900">
-                            {selectedLead.city !== 'Unknown' && selectedLead.city ? `${selectedLead.city}, ` : ''}{selectedLead.country || 'Unknown Location'}
+                            {selectedLead.city !== 'Unknown' && selectedLead.city ? `${selectedLead.city}, ` : ''}{selectedLead.country || t('unknownLocation')}
                           </p>
                           <p className="text-xs font-semibold text-zinc-500 mt-1 font-mono">
-                            IP: {selectedLead.ip_address}
+                            {t('ip')}: {selectedLead.ip_address}
                           </p>
                         </div>
                       </div>
@@ -395,14 +395,14 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                   {/* Activity Timeline (Notes) */}
                   <div className="pb-8">
                     <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                      <AlignLeft className="w-4 h-4" /> {t('internalNotes') || 'Activity & Notes'}
+                      <AlignLeft className="w-4 h-4" /> {t('activityAndNotes')}
                     </h3>
                     
                     <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
                       <div className="flex-1 p-5 max-h-[300px] overflow-y-auto space-y-4 bg-zinc-50/30">
                         {(!selectedLead.notes || selectedLead.notes.length === 0) ? (
                           <div className="text-center py-6 text-sm font-medium text-zinc-400">
-                            No notes yet. Be the first to add one!
+                            {t('noNotesYet')}
                           </div>
                         ) : (
                           selectedLead.notes.map((note) => (
@@ -427,17 +427,17 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                               handleAddNote();
                             }
                           }}
-                          placeholder="Type a note and press Enter..."
+                          placeholder={t('typeNotePlaceholder')}
                           className="w-full text-sm font-medium text-zinc-900 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none min-h-[60px]"
                         />
                         <div className="flex justify-between items-center mt-2">
-                          <span className="text-xs font-medium text-zinc-400 px-1">Markdown supported</span>
+                          <span className="text-xs font-medium text-zinc-400 px-1">{t('markdownSupported')}</span>
                           <button 
                             onClick={handleAddNote}
                             disabled={!newNote.trim() || isSubmittingNote}
                             className="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                           >
-                            {isSubmittingNote ? 'Saving...' : 'Save Note'}
+                            {isSubmittingNote ? t('savingNote') : t('saveNote')}
                           </button>
                         </div>
                       </div>

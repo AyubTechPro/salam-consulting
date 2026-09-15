@@ -153,6 +153,7 @@
         "service": "Мавзӯъ ва Паём",
         "date": "Сана",
         "status": "Статус",
+        "telemetry": "Телеметрия",
         "actions": "Амалҳо"
       },
       "status": {
@@ -163,7 +164,11 @@
         "mou": "Меморандум ба имзо расид",
         "rejected": "Рад карда шуд"
       },
-      "empty": "Мизоҷе бо ин талабот ёфт нашуд."
+      "empty": "Мизоҷе бо ин талабот ёфт нашуд.",
+      "leadsCount": "{count} мизоҷ",
+      "vipClient": "Мизоҷи VIP",
+      "copyEmail": "Нусхаи Email",
+      "noClientsFound": "Мизоҷе бо ин талабот ёфт нашуд."
     },
     "settings": {
       "title": "Танзимоти Система",
@@ -221,7 +226,14 @@
       "unknownOS": "Системаи номаълум",
       "unknownBrowser": "Браузери номаълум",
       "mobile": "Мобилӣ",
-      "desktop": "Компютер"
+      "desktop": "Компютер",
+      "activityAndNotes": "Фаъолият ва Қайдҳо",
+      "noNotesYet": "Ҳоло қайде нест. Аввалин шуда нависед!",
+      "typeNotePlaceholder": "Қайдро нависед ва Enter-ро пахш кунед...",
+      "markdownSupported": "Markdown дастгирӣ мешавад",
+      "saveNote": "Сабти Қайд",
+      "savingNote": "Сабт шуда истодааст...",
+      "clickToEdit": "Барои таҳрир клик кунед"
     },
     "command": {
       "search": "Ҷустуҷӯ...",

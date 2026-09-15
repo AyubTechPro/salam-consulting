@@ -153,6 +153,7 @@
         "service": "Service & Message",
         "date": "Date",
         "status": "Status",
+        "telemetry": "Telemetry",
         "actions": "Actions"
       },
       "status": {
@@ -163,7 +164,11 @@
         "mou": "MOU Signed",
         "rejected": "Rejected"
       },
-      "empty": "No leads found matching your criteria."
+      "empty": "No leads found matching your criteria.",
+      "leadsCount": "{count} leads",
+      "vipClient": "VIP Client",
+      "copyEmail": "Copy Email",
+      "noClientsFound": "No clients found matching your search."
     },
     "settings": {
       "title": "System Settings",
@@ -221,7 +226,14 @@
       "unknownOS": "Unknown OS",
       "unknownBrowser": "Unknown Browser",
       "mobile": "Mobile",
-      "desktop": "Desktop"
+      "desktop": "Desktop",
+      "activityAndNotes": "Activity & Notes",
+      "noNotesYet": "No notes yet. Be the first to add one!",
+      "typeNotePlaceholder": "Type a note and press Enter...",
+      "markdownSupported": "Markdown supported",
+      "saveNote": "Save Note",
+      "savingNote": "Saving...",
+      "clickToEdit": "Click to edit"
     },
     "command": {
       "search": "Search...",

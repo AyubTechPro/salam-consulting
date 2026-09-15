@@ -153,6 +153,7 @@
         "service": "Услуга и Сообщение",
         "date": "Дата",
         "status": "Статус",
+        "telemetry": "Телеметрия",
         "actions": "Действия"
       },
       "status": {
@@ -220,8 +221,15 @@
       "unknownLocation": "Неизвестное местоположение",
       "unknownOS": "Неизвестная ОС",
       "unknownBrowser": "Неизвестный браузер",
-      "mobile": "Мобильный",
-      "desktop": "Компьютер"
+      "mobile": "Моб. устройство",
+      "desktop": "Компьютер",
+      "activityAndNotes": "Активность и Заметки",
+      "noNotesYet": "Пока нет заметок. Напишите первым!",
+      "typeNotePlaceholder": "Введите заметку и нажмите Enter...",
+      "markdownSupported": "Поддерживается Markdown",
+      "saveNote": "Сохранить заметку",
+      "savingNote": "Сохранение...",
+      "clickToEdit": "Нажмите для редактирования"
     },
     "command": {
       "search": "Поиск...",
@@ -231,7 +239,12 @@
       "leads": "Клиенты (CRM)",
       "content": "Контент (CMS)",
       "settings": "Настройки",
-      "noResults": "Результаты не найдены."
+      "noResults": "Результаты не найдены.",
+      "empty": "Клиенты не найдены.",
+      "leadsCount": "{count} клиентов",
+      "vipClient": "VIP Клиент",
+      "copyEmail": "Скопировать Email",
+      "noClientsFound": "Клиенты не найдены."
     }
   }
 }
