@@ -2,10 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { jwtVerify } from 'jose';
 
-// Valid statuses in the CRM
-const VALID_STATUSES = ['new', 'contacted', 'meeting', 'mou_signed', 'enrolled', 'rejected'];
-
-export async function PATCH(req: Request) {
+export async function POST(req: Request) {
   try {
     // 1. Verify admin token
     const token = req.headers.get('cookie')?.split('admin_token=')[1]?.split(';')[0];
@@ -15,25 +12,32 @@ export async function PATCH(req: Request) {
     await jwtVerify(token, secret);
 
     // 2. Parse request
-    const body = await req.json();
-    const { id, status, name } = body;
-    if (!id) return NextResponse.json({ error: 'Missing ID' }, { status: 400 });
+    const { id, text } = await req.json();
+    if (!id || !text) return NextResponse.json({ error: 'Missing data' }, { status: 400 });
 
-    const updates: any = {};
-    if (status) {
-      if (!VALID_STATUSES.includes(status)) {
-        return NextResponse.json({ error: 'Invalid status value' }, { status: 400 });
-      }
-      updates.status = status;
-    }
-    if (name) {
-      updates.name = name;
+    // 3. Fetch current notes
+    const { data: lead, error: fetchError } = await supabase
+      .from('leads')
+      .select('notes')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching lead notes:', fetchError);
+      return NextResponse.json({ error: 'Failed to fetch lead' }, { status: 500 });
     }
 
-    // 3. Update Supabase
+    const currentNotes = lead.notes || [];
+    const newNote = {
+      id: crypto.randomUUID(),
+      text,
+      created_at: new Date().toISOString()
+    };
+
+    // 4. Update Supabase
     const { data, error } = await supabase
       .from('leads')
-      .update(updates)
+      .update({ notes: [...currentNotes, newNote] })
       .eq('id', id)
       .select()
       .single();
@@ -43,9 +47,9 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, note: newNote });
   } catch (error) {
-    console.error('Lead update error:', error);
+    console.error('Lead note add error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -27,6 +27,7 @@ type Lead = {
   country?: string;
   city?: string;
   referrer?: string;
+  notes?: { id: string; text: string; created_at: string }[];
 };
 
 const getLocaleObj = (localeCode: string) => {
@@ -61,6 +62,11 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
     { id: 'rejected', title: tLeads('status.rejected'), color: 'bg-zinc-50 text-zinc-700 border-zinc-200' }
   ];
 
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editNameValue, setEditNameValue] = useState('');
+  const [newNote, setNewNote] = useState('');
+  const [isSubmittingNote, setIsSubmittingNote] = useState(false);
+
   const updateLeadStatus = async (id: string, status: string) => {
     // Optimistic UI update
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
@@ -73,6 +79,46 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
   const isVIP = (email: string) => {
     const e = email.toLowerCase();
     return e.endsWith('.edu') || e.includes('corporate') || e.includes('admin') || e.includes('ceo') || e.includes('university') || e.includes('stanford') || e.includes('harvard');
+  };
+
+  const handleUpdateName = async () => {
+    if (!selectedLead || editNameValue.trim() === '' || editNameValue === selectedLead.name) {
+      setIsEditingName(false);
+      return;
+    }
+    const updatedName = editNameValue.trim();
+    setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, name: updatedName } : l));
+    setSelectedLead({ ...selectedLead, name: updatedName });
+    setIsEditingName(false);
+    
+    await fetch('/api/admin/leads', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: selectedLead.id, name: updatedName })
+    });
+  };
+
+  const handleAddNote = async () => {
+    if (!selectedLead || newNote.trim() === '') return;
+    setIsSubmittingNote(true);
+    
+    try {
+      const res = await fetch('/api/admin/leads/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedLead.id, text: newNote.trim() })
+      });
+      
+      if (res.ok) {
+        const { note } = await res.json();
+        const updatedNotes = [...(selectedLead.notes || []), note];
+        setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, notes: updatedNotes } : l));
+        setSelectedLead({ ...selectedLead, notes: updatedNotes });
+        setNewNote('');
+      }
+    } finally {
+      setIsSubmittingNote(false);
+    }
   };
 
   return (
@@ -207,24 +253,52 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
               transition={{ type: "spring", damping: 30, stiffness: 300, mass: 0.8 }}
               className="fixed top-0 right-0 w-full md:w-[600px] h-full bg-white shadow-2xl z-[101] flex flex-col border-l border-zinc-200/50"
             >
-              {/* Drawer Header */}
+              {/* Drawer Header & Quick Actions */}
               <div className="px-6 py-5 border-b border-zinc-100 flex items-start justify-between bg-white sticky top-0 z-10">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-lg font-black shrink-0 shadow-sm mt-1
                     ${isVIP(selectedLead.email) ? 'bg-amber-100 text-amber-700 ring-1 ring-amber-200' : 'bg-zinc-100 text-zinc-600 ring-1 ring-zinc-200'}`}>
                     {selectedLead.name.charAt(0)}
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-bold text-zinc-900 tracking-tight">{selectedLead.name}</h2>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 group">
+                      {isEditingName ? (
+                        <input
+                          autoFocus
+                          type="text"
+                          value={editNameValue}
+                          onChange={e => setEditNameValue(e.target.value)}
+                          onBlur={handleUpdateName}
+                          onKeyDown={e => e.key === 'Enter' && handleUpdateName()}
+                          className="text-xl font-bold text-zinc-900 tracking-tight bg-zinc-50 border border-zinc-200 rounded px-2 py-0.5 outline-none focus:ring-2 focus:ring-blue-500/20"
+                        />
+                      ) : (
+                        <h2 
+                          onClick={() => { setEditNameValue(selectedLead.name); setIsEditingName(true); }}
+                          className="text-xl font-bold text-zinc-900 tracking-tight cursor-pointer hover:bg-zinc-50 rounded px-1 -ml-1 transition-colors border border-transparent hover:border-zinc-200"
+                          title="Click to edit"
+                        >
+                          {selectedLead.name}
+                        </h2>
+                      )}
                       {isVIP(selectedLead.email) && <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase rounded tracking-widest shadow-sm">VIP Client</span>}
                     </div>
-                    <a href={`mailto:${selectedLead.email}`} className="text-sm font-medium text-zinc-500 hover:text-blue-600 transition-colors flex items-center gap-1.5 mt-1 group">
-                      <Mail className="w-3.5 h-3.5 group-hover:text-blue-500 transition-colors" /> {selectedLead.email}
-                    </a>
+                    
+                    {/* Quick Actions Bar */}
+                    <div className="flex items-center gap-3 mt-2">
+                      <a href={`mailto:${selectedLead.email}`} className="text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-md transition-colors flex items-center gap-1.5 border border-blue-100">
+                        <Mail className="w-3.5 h-3.5" /> {selectedLead.email}
+                      </a>
+                      <button 
+                        onClick={() => { navigator.clipboard.writeText(selectedLead.email); }}
+                        className="text-xs font-semibold text-zinc-500 hover:text-zinc-700 bg-zinc-50 hover:bg-zinc-100 px-2.5 py-1 rounded-md transition-colors border border-zinc-200"
+                      >
+                        Copy Email
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <button onClick={() => setSelectedLead(null)} className="p-2 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors text-zinc-400 hover:text-zinc-600 shadow-sm">
+                <button onClick={() => setSelectedLead(null)} className="p-2 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-lg transition-colors text-zinc-400 hover:text-zinc-600 shadow-sm shrink-0 ml-4">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -318,24 +392,54 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                     </div>
                   </div>
 
-                  {/* Internal Workflow */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
-                    <div>
-                      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <AlignLeft className="w-4 h-4" /> {t('internalNotes') || 'Internal Notes'}
-                      </h3>
-                      <div className="bg-yellow-50/50 p-5 rounded-xl border border-yellow-200/60 shadow-sm text-sm font-medium text-yellow-800/80 text-center flex flex-col items-center justify-center border-dashed">
-                        <p>{t('internalNotesDesc') || 'Private notes for your team.'}</p>
-                        <button className="mt-3 text-xs font-bold bg-yellow-100/80 px-4 py-2 rounded-lg hover:bg-yellow-200/80 text-yellow-900 transition-colors border border-yellow-200 shadow-sm">Add Note</button>
+                  {/* Activity Timeline (Notes) */}
+                  <div className="pb-8">
+                    <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                      <AlignLeft className="w-4 h-4" /> {t('internalNotes') || 'Activity & Notes'}
+                    </h3>
+                    
+                    <div className="bg-white rounded-xl border border-zinc-200 shadow-sm overflow-hidden flex flex-col">
+                      <div className="flex-1 p-5 max-h-[300px] overflow-y-auto space-y-4 bg-zinc-50/30">
+                        {(!selectedLead.notes || selectedLead.notes.length === 0) ? (
+                          <div className="text-center py-6 text-sm font-medium text-zinc-400">
+                            No notes yet. Be the first to add one!
+                          </div>
+                        ) : (
+                          selectedLead.notes.map((note) => (
+                            <div key={note.id} className="bg-white p-3.5 rounded-lg border border-zinc-100 shadow-sm">
+                              <p className="text-sm text-zinc-700 font-medium whitespace-pre-wrap">{note.text}</p>
+                              <div className="mt-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                                {formatDistanceToNow(new Date(note.created_at), { locale: dateLocale, addSuffix: true })}
+                              </div>
+                            </div>
+                          ))
+                        )}
                       </div>
-                    </div>
-                    <div>
-                      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <CheckSquare className="w-4 h-4" /> {t('tasks') || 'Tasks'}
-                      </h3>
-                      <div className="bg-white p-5 rounded-xl border border-zinc-200 shadow-sm text-sm font-medium text-zinc-400 text-center flex flex-col items-center justify-center border-dashed">
-                        <p>{t('noPendingTasks') || 'No pending tasks.'}</p>
-                        <button className="mt-3 text-xs font-bold bg-zinc-100 px-4 py-2 rounded-lg hover:bg-zinc-200 text-zinc-700 transition-colors border border-zinc-200 shadow-sm">Add Task</button>
+                      
+                      {/* Note Input */}
+                      <div className="p-3 border-t border-zinc-100 bg-white">
+                        <textarea
+                          value={newNote}
+                          onChange={(e) => setNewNote(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              handleAddNote();
+                            }
+                          }}
+                          placeholder="Type a note and press Enter..."
+                          className="w-full text-sm font-medium text-zinc-900 bg-zinc-50 border border-zinc-200 rounded-lg px-3 py-2.5 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none min-h-[60px]"
+                        />
+                        <div className="flex justify-between items-center mt-2">
+                          <span className="text-xs font-medium text-zinc-400 px-1">Markdown supported</span>
+                          <button 
+                            onClick={handleAddNote}
+                            disabled={!newNote.trim() || isSubmittingNote}
+                            className="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                          >
+                            {isSubmittingNote ? 'Saving...' : 'Save Note'}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
