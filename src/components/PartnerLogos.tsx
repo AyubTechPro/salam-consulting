@@ -8,7 +8,8 @@ const logoImages = [
   "IMG_20260731_183409_681.PNG",
   "KNU-VerticalSignature (1).gif",
   "file_00000000ed64824386de0a706beb1296.png",
-  "IMG_7086.JPG"
+  "IMG_7086.JPG",
+  "images.jpeg"
 ];
 
 // Duplicate the array to create a seamless infinite loop
