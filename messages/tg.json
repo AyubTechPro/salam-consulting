@@ -201,7 +201,20 @@
       "noDestinationsTitle": "Ягон самт ёфт нашуд",
       "noDestinationsDesc": "Барои идоракунии динамикӣ, самтҳоро дар ин ҷо илова кунед.",
       "noPartnersTitle": "Ягон шарик ёфт нашуд",
-      "noPartnersDesc": "Шарикон ва донишгоҳҳоро дар ин ҷо илова кунед."
+      "noPartnersDesc": "Шарикон ва донишгоҳҳоро дар ин ҷо илова кунед.",
+      "addDestinationModalTitle": "Иловаи Самти Нав",
+      "addPartnerModalTitle": "Иловаи Шарики Нав",
+      "nameLabel": "Ном",
+      "descriptionLabel": "Тавсиф",
+      "imageUrlLabel": "Линки Расм (URL)",
+      "logoUrlLabel": "Линки Логотип (URL)",
+      "websiteUrlLabel": "Линки Сайт (URL)",
+      "cancel": "Бекор кардан",
+      "save": "Сабт",
+      "saving": "Сабт шуда истодааст...",
+      "success": "Бомуваффақият сабт шуд!",
+      "error": "Хатогӣ рӯй дод",
+      "delete": "Нест кардан"
     },
     "kanban": {
       "search": "Ҷустуҷӯи мизоҷон (Cmd+K)...",
