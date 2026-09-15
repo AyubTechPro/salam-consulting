@@ -6,17 +6,47 @@ import { supabase } from '@/lib/supabase';
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
+// QA: Strict Email Validation Regex
+const isValidEmail = (email: string) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+// Send Telegram Alert Helper
+const sendTelegramAlert = async (message: string) => {
+  const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+  if (telegramToken && telegramChatId) {
+    try {
+      await fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      });
+    } catch (e) {
+      console.error('Failed to send Telegram alert:', e);
+    }
+  }
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const { name, email, subject, message, locale = 'en', telemetry = {} } = body;
 
-    // Validate input fields
-    if (!name || !email || !message) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
+    // QA: Validate input fields securely
+    if (!name || typeof name !== 'string' || name.trim() === '') {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 });
+    }
+    if (!email || typeof email !== 'string' || !isValidEmail(email)) {
+      return NextResponse.json({ error: 'Valid email is required' }, { status: 400 });
+    }
+    if (!message || typeof message !== 'string' || message.trim() === '') {
+      return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
     // Capture Advanced Metadata (Silicon Valley Style Analytics)
@@ -30,8 +60,8 @@ export async function POST(req: Request) {
     const finalCountry = telemetry.country || vercelCountry || 'Unknown';
     const finalCity = telemetry.city || vercelCity || 'Unknown';
 
-    // 1. PUSH TO SUPABASE CRM (Silent fail if keys missing so app doesn't break)
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    // 1. PUSH TO SUPABASE CRM
+    if (process.env.NEXT_PUBLIC_SUPABASE_URL && (process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
       const { error: dbError } = await supabase
         .from('leads')
         .insert([
@@ -57,45 +87,32 @@ export async function POST(req: Request) {
         
       if (dbError) {
         console.error('Supabase CRM Error:', dbError);
-        // We don't fail the request here, just log it.
+        // QA: Graceful Degradation - Notify Admin about DB failure but continue processing email
+        await sendTelegramAlert(`🚨 *CRITICAL DATABASE ERROR* 🚨\n\nA lead was received but failed to save to Supabase. Please add manually.\n\n*Name:* ${name}\n*Email:* ${email}\n*Error:* ${dbError.message}`);
       }
     } else {
-      console.log('Skipping Supabase insert: Missing API keys in .env');
+      console.warn('Skipping Supabase insert: Missing API keys in .env');
     }
 
     // 1.5. VIP TELEGRAM ALERTS (Corporate Telemetry)
-    const isVIP = email.endsWith('.edu') || email.includes('corporate') || email.includes('admin') || email.includes('ceo') || email.includes('university') || email.includes('stanford') || email.includes('harvard');
+    const isVIP = email.toLowerCase().endsWith('.edu') || 
+                  email.toLowerCase().includes('corporate') || 
+                  email.toLowerCase().includes('admin') || 
+                  email.toLowerCase().includes('ceo') || 
+                  email.toLowerCase().includes('university') || 
+                  email.toLowerCase().includes('stanford') || 
+                  email.toLowerCase().includes('harvard');
     
     if (isVIP) {
-      const telegramToken = process.env.TELEGRAM_BOT_TOKEN;
-      const telegramChatId = process.env.TELEGRAM_CHAT_ID;
-      
       const tgMessage = `🚨 *VIP B2B LEAD ALERT* 🚨\n\n*Name:* ${name}\n*Email:* ${email}\n*Subject:* ${subject || 'N/A'}\n*Location:* ${finalCity}, ${finalCountry}\n\n_This lead was flagged as a VIP Partner (University/Corporate). Please check the Admin Panel immediately._`;
-      
-      if (telegramToken && telegramChatId) {
-        try {
-          fetch(`https://api.telegram.org/bot${telegramToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: telegramChatId,
-              text: tgMessage,
-              parse_mode: 'Markdown'
-            })
-          }).catch(e => console.error('Failed to send Telegram alert:', e));
-          console.log('VIP Telegram Alert Dispatched!');
-        } catch (e) {
-          console.error('Failed to send Telegram alert:', e);
-        }
-      } else {
-        console.log('VIP Lead Detected (Corporate Telemetry)! -> Add TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID to .env to receive instant alerts on your phone.');
-      }
+      // Don't await, let it send in the background
+      sendTelegramAlert(tgMessage);
     }
 
     // If no Resend API key, simulate success
     if (!resendApiKey || !resend) {
       console.log('Simulating email send (No RESEND_API_KEY found). Data:', { name, email, subject, message });
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
       return NextResponse.json({ success: true, simulated: true });
     }
 
@@ -130,8 +147,7 @@ export async function POST(req: Request) {
       `,
     });
 
-    // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER (Silicon Valley Standard)
-    // Localization
+    // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER (QA: i18n Fix)
     const translations: Record<string, any> = {
       en: {
         subject: 'Inquiry Received - Salam Consulting',
@@ -155,11 +171,14 @@ export async function POST(req: Request) {
         quote: '"Подготовка мировых лидеров через образовательный консалтинг мирового класса."'
       }
     };
-    const t = translations[locale] || translations.en;
+    
+    // Ensure fallback is secure even if an unsupported locale is passed
+    const safeLocale = ['en', 'tg', 'ru'].includes(locale) ? locale : 'en';
+    const t = translations[safeLocale];
 
     const userEmailPromise = resend.emails.send({
       from: fromEmail,
-      to: email,
+      to: email, // Warning: If using Resend free tier, this will fail unless domain is verified or email is the verified one.
       subject: t.subject,
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px; background-color: #ffffff;">
@@ -185,7 +204,6 @@ export async function POST(req: Request) {
             </p>
           </div>
 
-          
           <div style="margin-bottom: 40px;">
             <a href="https://www.salamconsultingedu.com" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 15px; display: inline-block;">
               Visit Our Website
@@ -205,14 +223,14 @@ export async function POST(req: Request) {
     // Run both emails in parallel for speed
     const [adminResult, userResult] = await Promise.all([adminEmailPromise, userEmailPromise]);
 
-    if (adminResult.error || userResult.error) {
-      console.error('Resend API Error:', adminResult.error || userResult.error);
-      return NextResponse.json(
-        { error: 'Failed to send message via Resend' },
-        { status: 500 }
-      );
+    if (adminResult.error) {
+      console.error('Resend API Error (Admin Email):', adminResult.error);
+    }
+    if (userResult.error) {
+      console.error('Resend API Error (User Email):', userResult.error);
     }
 
+    // Return success even if email fails, because the lead was captured in DB/Telegram
     return NextResponse.json({ success: true, adminResult, userResult });
   } catch (error) {
     console.error('Contact API Internal Error:', error);

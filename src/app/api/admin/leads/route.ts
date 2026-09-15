@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { jwtVerify } from 'jose';
 
+// Valid statuses in the CRM
+const VALID_STATUSES = ['new', 'contacted', 'meeting', 'mou_signed', 'enrolled', 'rejected'];
+
 export async function PATCH(req: Request) {
   try {
     // 1. Verify admin token
@@ -15,6 +18,11 @@ export async function PATCH(req: Request) {
     const { id, status } = await req.json();
     if (!id || !status) return NextResponse.json({ error: 'Missing data' }, { status: 400 });
 
+    // 2.5 QA Fix: Validate status to prevent corrupt data
+    if (!VALID_STATUSES.includes(status)) {
+      return NextResponse.json({ error: 'Invalid status value' }, { status: 400 });
+    }
+
     // 3. Update Supabase
     const { data, error } = await supabase
       .from('leads')
@@ -23,7 +31,10 @@ export async function PATCH(req: Request) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase update error:', error);
+      return NextResponse.json({ error: 'Database update failed' }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
