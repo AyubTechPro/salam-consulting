@@ -95,7 +95,21 @@
       "subject": "Subject",
       "message": "Your Message",
       "submit": "Send Message"
-    }
+    },
+    "fastestResponse": "Fastest Response",
+    "messageWhatsapp": "Message us on WhatsApp",
+    "startChat": "Start Chat",
+    "telegramSupport": "Telegram Support",
+    "messageTelegram": "Message us on Telegram",
+    "openTelegram": "Open Telegram"
+  },
+  "Footer": {
+    "empowering": "Empowering your academic journey worldwide with professional consulting and personalized guidance.",
+    "quickLinks": "Quick Links",
+    "address": "Rudaki Avenue 53, Dushanbe 734001, Tajikistan",
+    "whatsappUs": "WhatsApp Us",
+    "telegramSupport": "Telegram Support",
+    "allRightsReserved": "All rights reserved."
   },
   "Cta": {
     "title": "Ready to Start Your Journey?",

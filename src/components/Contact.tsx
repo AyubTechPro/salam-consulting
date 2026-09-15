@@ -242,10 +242,10 @@ export default function Contact() {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Fastest Response</h3>
-                <a href="https://wa.me/992940076006" target="_blank" rel="noopener noreferrer" className="inline-block font-bold text-slate-900 mb-2">Message us on WhatsApp</a>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{t('fastestResponse')}</h3>
+                <a href="https://wa.me/992940076006" target="_blank" rel="noopener noreferrer" className="inline-block font-bold text-slate-900 mb-2">{t('messageWhatsapp')}</a>
                 <a href="https://wa.me/992940076006" target="_blank" rel="noopener noreferrer" className="block text-center w-full bg-[#25D366] text-white py-2 rounded-xl font-bold hover:bg-[#20bd5a] transition-colors shadow-sm">
-                  Start Chat
+                  {t('startChat')}
                 </a>
               </div>
             </div>
@@ -257,10 +257,10 @@ export default function Contact() {
                 </svg>
               </div>
               <div className="flex-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Telegram Support</h3>
-                <a href="https://t.me/salamconsultingsupport" target="_blank" rel="noopener noreferrer" className="inline-block font-bold text-slate-900 mb-2">Message us on Telegram</a>
-                <a href="https://t.me/salamconsultingsupport" target="_blank" rel="noopener noreferrer" className="block text-center w-full bg-[#0088cc] text-white py-2 rounded-xl font-bold hover:bg-[#0077b3] transition-colors shadow-sm">
-                  Open Telegram
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">{t('telegramSupport')}</h3>
+                <a href="https://t.me/salamconsultingedu" target="_blank" rel="noopener noreferrer" className="inline-block font-bold text-slate-900 mb-2">{t('messageTelegram')}</a>
+                <a href="https://t.me/salamconsultingedu" target="_blank" rel="noopener noreferrer" className="block text-center w-full bg-[#0088cc] text-white py-2 rounded-xl font-bold hover:bg-[#0077b3] transition-colors shadow-sm">
+                  {t('openTelegram')}
                 </a>
               </div>
             </div>

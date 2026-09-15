@@ -108,8 +108,8 @@ export default async function RootLayout(
       "availableLanguage": ["English", "Russian", "Tajik"]
     },
     "sameAs": [
-      "https://www.instagram.com/salamconsultingtj",
-      "https://t.me/salamconsultingtj",
+      "https://www.instagram.com/salamconsultingedu",
+      "https://t.me/salamconsultingedu",
       "https://www.linkedin.com/company/salamconsulting/"
     ],
     "makesOffer": [
