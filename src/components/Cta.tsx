@@ -10,16 +10,13 @@ export default function Cta() {
   const ctaT = useTranslations('Cta');
 
   return (
-    <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 w-full bg-white relative border-t border-slate-200 overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none mix-blend-multiply" />
-      
+    <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 w-full bg-slate-900 text-white relative overflow-hidden">
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-slate-900 mb-6"
+          className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tight mb-6"
         >
           {ctaT('title')}
         </motion.h2>
@@ -28,7 +25,7 @@ export default function Cta() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-xl text-slate-600 font-normal tracking-wide mb-10 max-w-2xl mx-auto"
+          className="text-xl text-slate-300 font-normal tracking-wide mb-10 max-w-2xl mx-auto"
         >
           {ctaT('description')}
         </motion.p>
@@ -41,7 +38,7 @@ export default function Cta() {
         >
           <Link 
             href="/contact" 
-            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition-all shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-1 active:scale-95 group"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-slate-900 px-8 py-4 rounded-full text-lg font-bold hover:bg-slate-100 transition-colors active:scale-95 group shadow-sm"
           >
             {t('Hero.primaryBtn')}
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
