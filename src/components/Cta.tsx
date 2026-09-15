@@ -10,7 +10,9 @@ export default function Cta() {
   const ctaT = useTranslations('Cta');
 
   return (
-    <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 w-full bg-slate-900 text-white relative overflow-hidden">
+    <section className="py-16 md:py-32 px-4 sm:px-6 lg:px-8 w-full bg-[#0a192f] text-white relative overflow-hidden">
+      {/* Vercel-style clean subtle grid on dark background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20" />
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}

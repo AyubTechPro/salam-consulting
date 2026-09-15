@@ -27,9 +27,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-screen px-4 overflow-hidden pt-24 bg-white">
-      {/* Extremely subtle dot pattern instead of noisy grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-40" />
+    <section className="relative flex flex-col items-center justify-center min-h-screen px-4 overflow-hidden pt-24 bg-[#FAFAFA]">
+      {/* Vercel-style clean subtle glow */}
+      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:24px_24px] opacity-40 mix-blend-multiply" />
 
       <motion.div
         initial="hidden"
@@ -43,7 +44,10 @@ export default function Hero() {
           variants={item}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-center max-w-5xl leading-[1.1] sm:leading-[1.05] px-2 text-slate-900"
         >
-          {t('title')}
+          {/* Apply a premium, deep gradient to the text */}
+          <span className="text-transparent bg-clip-text bg-gradient-to-b from-slate-900 to-slate-700 drop-shadow-sm">
+            {t('title')}
+          </span>
         </motion.h1>
 
         <motion.p 
@@ -59,7 +63,7 @@ export default function Hero() {
         >
           <Link 
             href="/contact" 
-            className="w-full sm:w-auto group relative flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-slate-800 transition-colors active:scale-95 shadow-sm"
+            className="w-full sm:w-auto group relative flex items-center justify-center gap-2 bg-blue-600 text-white px-8 py-3.5 rounded-full text-base font-semibold hover:bg-blue-700 transition-all active:scale-95 shadow-[0_1px_2px_rgba(0,0,0,0.1),0_8px_20px_rgba(37,99,235,0.25)] hover:shadow-[0_1px_2px_rgba(0,0,0,0.1),0_12px_24px_rgba(37,99,235,0.35)]"
           >
             {t('primaryBtn')} 
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

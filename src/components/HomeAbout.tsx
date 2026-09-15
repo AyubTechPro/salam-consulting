@@ -16,7 +16,7 @@ export default function HomeAbout() {
           transition={{ duration: 0.5 }}
           className="flex justify-center mb-8"
         >
-          <div className="w-12 h-12 text-slate-400 flex items-center justify-center">
+          <div className="w-12 h-12 text-blue-500/40 flex items-center justify-center">
             <Quote className="w-8 h-8" />
           </div>
         </motion.div>
@@ -26,10 +26,10 @@ export default function HomeAbout() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-[1.3] md:leading-snug tracking-tight mb-8"
+          className="text-2xl md:text-4xl lg:text-5xl font-bold text-slate-800 leading-[1.4] md:leading-snug tracking-tight mb-8"
         >
           {t.rich('title', {
-            name: (chunks) => <span className="text-slate-900 underline decoration-slate-200 underline-offset-4">{chunks}</span>
+            name: (chunks) => <span className="text-blue-600 font-black">{chunks}</span>
           })}
         </motion.h2>
 

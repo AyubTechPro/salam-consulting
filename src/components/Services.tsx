@@ -59,14 +59,16 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.7, ease: "easeOut" as const }}
-              className={`${service.size} group relative bg-white border border-slate-200 overflow-hidden flex flex-col justify-between p-6 md:p-10 transition-all duration-300 hover:shadow-md hover:border-slate-300 min-h-[280px] lg:min-h-[320px] rounded-2xl`}
+              className={`${service.size} group relative bg-white border border-slate-200 overflow-hidden flex flex-col justify-between p-6 md:p-10 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-blue-200 min-h-[280px] lg:min-h-[320px] rounded-2xl`}
             >
+              {/* Subtle top border accent on hover */}
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               {/* Icon & Number */}
               <div className="relative z-10 flex justify-between items-start mb-12">
-                <div className={`w-12 h-12 flex items-center justify-center text-slate-900 group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 flex items-center justify-center text-blue-600 bg-blue-50/50 rounded-xl group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-300`}>
                   <Icon className="w-6 h-6" />
                 </div>
-                <div className="text-4xl font-black text-slate-100 group-hover:text-slate-200 transition-colors duration-300 tracking-tighter select-none">
+                <div className="text-4xl font-black text-slate-50 group-hover:text-blue-50 transition-colors duration-300 tracking-tighter select-none">
                   0{index + 1}
                 </div>
               </div>
