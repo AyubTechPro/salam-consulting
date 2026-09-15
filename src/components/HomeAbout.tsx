@@ -2,8 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { Quote } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function HomeAbout() {
+  const t = useTranslations('HomeAbout');
   return (
     <section className="py-16 md:py-32 w-full bg-white relative overflow-hidden flex items-center justify-center">
       
@@ -31,7 +33,9 @@ export default function HomeAbout() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="text-xl md:text-4xl lg:text-5xl font-bold text-slate-900 leading-[1.3] md:leading-snug tracking-tight mb-8"
         >
-          Salam Consulting was founded in February 2024 in Dushanbe, Tajikistan, by young entrepreneur and education advocate <span className="text-blue-600">Abdurahmonbek Akhmedov</span>.
+          {t.rich('title', {
+            name: (chunks) => <span className="text-blue-600">{chunks}</span>
+          })}
         </motion.h2>
 
         <motion.p 
@@ -41,7 +45,7 @@ export default function HomeAbout() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-base md:text-2xl text-slate-500 font-medium leading-relaxed max-w-3xl mx-auto"
         >
-          The company was established with a vision to help students access international education opportunities and receive professional guidance throughout their journey to studying abroad.
+          {t('description')}
         </motion.p>
       </div>
     </section>

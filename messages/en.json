@@ -111,6 +111,10 @@
     "telegramSupport": "Telegram Support",
     "allRightsReserved": "All rights reserved."
   },
+  "HomeAbout": {
+    "title": "Salam Consulting was founded in February 2024 in Dushanbe, Tajikistan, by young entrepreneur and education advocate <name>Abdurahmonbek Akhmedov</name>.",
+    "description": "The company was established with a vision to help students access international education opportunities and receive professional guidance throughout their journey to studying abroad."
+  },
   "Cta": {
     "title": "Ready to Start Your Journey?",
     "description": "Contact us today to schedule your free consultation and discover how we can help you achieve your international education goals."
