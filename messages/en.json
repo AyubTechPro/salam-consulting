@@ -122,10 +122,25 @@
       "conversion": "Conversion Rate",
       "smartInsights": "Smart Insights",
       "insightsText": "You have {unread} new leads waiting for your response. Most of your recent traffic is looking for Study Abroad services.",
-      "chartTitle": "Lead Generation Overview",
-      "chartSubtitle": "New inquiries over the last 7 days",
-      "recentLeads": "Recent Leads",
-      "viewAll": "View all leads"
+      "chartTitle": "Inquiry Analytics",
+      "chartSubtitle": "New leads over the last 7 days",
+      "recentLeads": "Recent Inquiries",
+      "viewAll": "View all leads",
+      "intelligence": {
+        "title": "Intelligence & Analytics",
+        "subtitle": "Global telemetry, acquisition sources, and device fingerprinting.",
+        "globalRadar": "Global Radar",
+        "noCountryData": "No country data collected yet.",
+        "trafficSources": "Traffic Sources",
+        "noReferrerData": "No referrer data collected yet.",
+        "deviceFingerprints": "Device Fingerprints",
+        "operatingSystems": "Operating Systems",
+        "noOsData": "No OS data",
+        "formFactor": "Form Factor",
+        "noDeviceData": "No device data",
+        "activityPulse": "Activity Pulse",
+        "viewAllPulse": "View All"
+      }
     },
     "leads": {
       "title": "Leads CRM",

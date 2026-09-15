@@ -196,9 +196,9 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
         {/* VIP & Recent Leads Pulse */}
         <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] flex flex-col overflow-hidden">
           <div className="p-5 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/80 backdrop-blur-sm">
-            <h3 className="text-base font-bold text-zinc-900 tracking-tight">Activity Pulse</h3>
+            <h3 className="text-base font-bold text-zinc-900 tracking-tight">{t('intelligence.activityPulse')}</h3>
             <Link href={`/${locale}/admin/leads`} className="text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 px-2 py-1 rounded">
-              View All
+              {t('intelligence.viewAllPulse')}
             </Link>
           </div>
           <div className="flex-1 overflow-y-auto">
@@ -252,8 +252,8 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
       {/* Intelligence & Analytics (Spy Widgets) */}
       <div className="pt-6 border-t border-zinc-200">
         <div className="mb-6">
-          <h2 className="text-xl font-bold text-zinc-900 tracking-tight">Intelligence & Analytics</h2>
-          <p className="text-sm text-zinc-500 mt-1">Global telemetry, acquisition sources, and device fingerprinting.</p>
+          <h2 className="text-xl font-bold text-zinc-900 tracking-tight">{t('intelligence.title')}</h2>
+          <p className="text-sm text-zinc-500 mt-1">{t('intelligence.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -262,7 +262,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
           <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden">
             <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
               <Globe className="w-4 h-4 text-blue-600" />
-              <h3 className="text-sm font-bold text-zinc-900">Global Radar</h3>
+              <h3 className="text-sm font-bold text-zinc-900">{t('intelligence.globalRadar')}</h3>
             </div>
             <div className="p-5 space-y-4">
               {topCountries.length > 0 ? topCountries.map((c, i) => (
@@ -276,7 +276,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
                   </div>
                 </div>
               )) : (
-                <p className="text-sm text-zinc-400 text-center py-4">No country data collected yet.</p>
+                <p className="text-sm text-zinc-400 text-center py-4">{t('intelligence.noCountryData')}</p>
               )}
             </div>
           </div>
@@ -285,7 +285,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
           <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden">
             <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
               <MousePointerClick className="w-4 h-4 text-amber-500" />
-              <h3 className="text-sm font-bold text-zinc-900">Traffic Sources</h3>
+              <h3 className="text-sm font-bold text-zinc-900">{t('intelligence.trafficSources')}</h3>
             </div>
             <div className="p-5 space-y-4">
               {topReferrers.length > 0 ? topReferrers.map((r, i) => (
@@ -299,7 +299,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
                   </div>
                 </div>
               )) : (
-                <p className="text-sm text-zinc-400 text-center py-4">No referrer data collected yet.</p>
+                <p className="text-sm text-zinc-400 text-center py-4">{t('intelligence.noReferrerData')}</p>
               )}
             </div>
           </div>
@@ -308,11 +308,11 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
           <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden flex flex-col">
             <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
               <Laptop className="w-4 h-4 text-emerald-600" />
-              <h3 className="text-sm font-bold text-zinc-900">Device Fingerprints</h3>
+              <h3 className="text-sm font-bold text-zinc-900">{t('intelligence.deviceFingerprints')}</h3>
             </div>
             <div className="p-5 space-y-6 flex-1 flex flex-col justify-center">
               <div>
-                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">Operating Systems</h4>
+                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">{t('intelligence.operatingSystems')}</h4>
                 <div className="space-y-3">
                   {topOS.length > 0 ? topOS.map((o, i) => (
                     <div key={i} className="flex justify-between items-center text-sm">
@@ -320,13 +320,13 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
                       <span className="px-2 py-0.5 bg-zinc-100 text-zinc-600 rounded text-xs font-semibold">{o.count}</span>
                     </div>
                   )) : (
-                    <p className="text-xs text-zinc-400">No OS data</p>
+                    <p className="text-xs text-zinc-400">{t('intelligence.noOsData')}</p>
                   )}
                 </div>
               </div>
               
               <div className="pt-4 border-t border-zinc-100">
-                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">Form Factor</h4>
+                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">{t('intelligence.formFactor')}</h4>
                 <div className="flex gap-4">
                   {topDevices.length > 0 ? topDevices.map((d, i) => (
                     <div key={i} className="flex items-center gap-1.5 text-sm font-medium text-zinc-800">
@@ -334,7 +334,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
                       {d.name}: {d.percentage}%
                     </div>
                   )) : (
-                    <p className="text-xs text-zinc-400">No device data</p>
+                    <p className="text-xs text-zinc-400">{t('intelligence.noDeviceData')}</p>
                   )}
                 </div>
               </div>
