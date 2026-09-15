@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase';
-import { Users, TrendingUp, Inbox, ArrowUpRight, Clock, ShieldCheck, Mail } from 'lucide-react';
+import { Users, TrendingUp, Inbox, ArrowUpRight, Clock, ShieldCheck, Mail, Globe, MousePointerClick, Laptop, Smartphone } from 'lucide-react';
 import Link from 'next/link';
 import LeadsChart from '@/components/admin/LeadsChart';
 import { getTranslations } from 'next-intl/server';
@@ -15,12 +15,10 @@ function getRelativeTime(dateString: string, localeCode: string) {
   const rtfEn = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
   const rtfTg = new Intl.RelativeTimeFormat('tg', { numeric: 'auto' });
   
-  // Custom fallback for Tajik if Intl doesn't support 'tg' fully in the browser/node
   const formatTg = (val: number, unit: Intl.RelativeTimeFormatUnit) => {
     try {
       return rtfTg.format(val, unit);
     } catch {
-      // Manual fallback mapping
       if (unit === 'second') return `${Math.abs(val)} сония пеш`;
       if (unit === 'minute') return `${Math.abs(val)} дақиқа пеш`;
       if (unit === 'hour') return `${Math.abs(val)} соат пеш`;
@@ -49,6 +47,26 @@ function getRelativeTime(dateString: string, localeCode: string) {
   return format(-diffInYears, 'year');
 }
 
+// Telemetry Aggregation Helper
+const getTopItems = (data: any[], key: string, limit = 4) => {
+  if (!data || data.length === 0) return [];
+  const counts: Record<string, number> = {};
+  data.forEach(item => {
+    const val = item[key];
+    if (val) counts[val] = (counts[val] || 0) + 1;
+  });
+  const totalWithKey = Object.values(counts).reduce((a, b) => a + b, 0);
+  
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([name, count]) => ({ 
+      name: name.length > 25 ? name.substring(0, 25) + '...' : name, 
+      count, 
+      percentage: totalWithKey > 0 ? Math.round((count / totalWithKey) * 100) : 0 
+    }));
+};
+
 export default async function AdminDashboard({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Admin.dashboard' });
@@ -68,7 +86,6 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
   const contacted = leads?.filter(l => l.status !== 'new').length || 0;
   const recentLeads = leads?.slice(0, 6) || [];
   
-  // VIP Logic: Identify corporate emails
   const isVIP = (email: string) => {
     const e = email.toLowerCase();
     return e.endsWith('.edu') || e.includes('corporate') || e.includes('admin') || e.includes('ceo') || e.includes('university') || e.includes('harvard') || e.includes('stanford');
@@ -76,13 +93,21 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
   
   const vipLeads = leads?.filter(l => isVIP(l.email)) || [];
   const newVipLeads = vipLeads.filter(l => l.status === 'new').length;
-  
   const conversionRate = totalLeads > 0 ? Math.round((contacted / totalLeads) * 100) : 0;
+
+  // Spy Analytics Aggregations
+  const topCountries = getTopItems(leads || [], 'country');
+  const topReferrers = getTopItems(leads || [], 'referrer').map(r => ({
+    ...r,
+    name: r.name.replace('https://', '').replace('http://', '').replace('www.', '').split('/')[0]
+  }));
+  const topOS = getTopItems(leads || [], 'os');
+  const topDevices = getTopItems(leads || [], 'device_type');
 
   return (
     <div className="space-y-8 pb-10">
       
-      {/* Premium Header Intro (Linear Style) */}
+      {/* Premium Header Intro */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-zinc-200">
         <div className="space-y-1.5">
           <h1 className="text-3xl font-bold text-zinc-900 tracking-tight">{t('greeting')}</h1>
@@ -103,7 +128,7 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
         </div>
       </div>
 
-      {/* Metrics Row (Stripe/Linear Aesthetics - Glassmorphism & Micro-animations) */}
+      {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
         
         <div className="bg-white p-6 rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all flex flex-col justify-between group">
@@ -223,6 +248,102 @@ export default async function AdminDashboard({ params }: { params: Promise<{ loc
           </div>
         </div>
       </div>
+
+      {/* Intelligence & Analytics (Spy Widgets) */}
+      <div className="pt-6 border-t border-zinc-200">
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-zinc-900 tracking-tight">Intelligence & Analytics</h2>
+          <p className="text-sm text-zinc-500 mt-1">Global telemetry, acquisition sources, and device fingerprinting.</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* Global Radar */}
+          <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden">
+            <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
+              <Globe className="w-4 h-4 text-blue-600" />
+              <h3 className="text-sm font-bold text-zinc-900">Global Radar</h3>
+            </div>
+            <div className="p-5 space-y-4">
+              {topCountries.length > 0 ? topCountries.map((c, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-zinc-900">{c.name}</span>
+                    <span className="font-semibold text-zinc-500">{c.percentage}%</span>
+                  </div>
+                  <div className="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-blue-500 h-1.5 rounded-full" style={{ width: `${c.percentage}%` }}></div>
+                  </div>
+                </div>
+              )) : (
+                <p className="text-sm text-zinc-400 text-center py-4">No country data collected yet.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Acquisition Sources */}
+          <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden">
+            <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
+              <MousePointerClick className="w-4 h-4 text-amber-500" />
+              <h3 className="text-sm font-bold text-zinc-900">Traffic Sources</h3>
+            </div>
+            <div className="p-5 space-y-4">
+              {topReferrers.length > 0 ? topReferrers.map((r, i) => (
+                <div key={i} className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium text-zinc-900 truncate pr-4">{r.name}</span>
+                    <span className="font-semibold text-zinc-500">{r.percentage}%</span>
+                  </div>
+                  <div className="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-amber-400 h-1.5 rounded-full" style={{ width: `${r.percentage}%` }}></div>
+                  </div>
+                </div>
+              )) : (
+                <p className="text-sm text-zinc-400 text-center py-4">No referrer data collected yet.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Device Fingerprinting */}
+          <div className="bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden flex flex-col">
+            <div className="p-5 border-b border-zinc-100 flex items-center gap-2 bg-zinc-50/80">
+              <Laptop className="w-4 h-4 text-emerald-600" />
+              <h3 className="text-sm font-bold text-zinc-900">Device Fingerprints</h3>
+            </div>
+            <div className="p-5 space-y-6 flex-1 flex flex-col justify-center">
+              <div>
+                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">Operating Systems</h4>
+                <div className="space-y-3">
+                  {topOS.length > 0 ? topOS.map((o, i) => (
+                    <div key={i} className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-zinc-800">{o.name}</span>
+                      <span className="px-2 py-0.5 bg-zinc-100 text-zinc-600 rounded text-xs font-semibold">{o.count}</span>
+                    </div>
+                  )) : (
+                    <p className="text-xs text-zinc-400">No OS data</p>
+                  )}
+                </div>
+              </div>
+              
+              <div className="pt-4 border-t border-zinc-100">
+                <h4 className="text-xs font-semibold uppercase text-zinc-400 mb-3 tracking-wider">Form Factor</h4>
+                <div className="flex gap-4">
+                  {topDevices.length > 0 ? topDevices.map((d, i) => (
+                    <div key={i} className="flex items-center gap-1.5 text-sm font-medium text-zinc-800">
+                      {d.name.toLowerCase().includes('mobile') ? <Smartphone className="w-3.5 h-3.5 text-zinc-400" /> : <Laptop className="w-3.5 h-3.5 text-zinc-400" />}
+                      {d.name}: {d.percentage}%
+                    </div>
+                  )) : (
+                    <p className="text-xs text-zinc-400">No device data</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   );
 }
