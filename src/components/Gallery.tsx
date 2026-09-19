@@ -15,9 +15,9 @@ const partnerImages = [
   "IMG_67931.JPG",
   "IMG_68341.JPG",
   "IMG_69801.JPG",
-  "IMG_8274.HEIC",
-  "IMG_8292.HEIC",
-  "IMG_8337.HEIC"
+  "IMG_8274.jpg",
+  "IMG_8292.jpg",
+  "IMG_8337.jpg"
 ];
 
 // Duplicate the array to create a seamless infinite loop
