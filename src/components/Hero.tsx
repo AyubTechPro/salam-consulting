@@ -42,7 +42,7 @@ export default function Hero() {
 
         <motion.h1 
           variants={item}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-center max-w-5xl leading-[1.1] sm:leading-[1.05] px-2 text-slate-900"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black tracking-tight text-center max-w-5xl leading-[1.15] sm:leading-[1.1] md:leading-[1.05] px-2 text-slate-900"
         >
           {/* Apply a premium, deep gradient to the text */}
           <span className="text-transparent bg-clip-text bg-gradient-to-b from-slate-900 to-slate-700 drop-shadow-sm">
@@ -59,7 +59,7 @@ export default function Hero() {
 
         <motion.div 
           variants={item}
-          className="mt-12 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
+          className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
           <Link 
             href="/contact" 

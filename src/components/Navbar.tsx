@@ -18,7 +18,6 @@ export default function Navbar() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
 
   if (pathname.includes('/admin')) {
@@ -30,7 +29,6 @@ export default function Navbar() {
   const changeLanguage = (locale: string) => {
     router.replace(pathname, { locale });
     setIsLangOpen(false);
-    setIsMobileMenuOpen(false);
   };
 
   const navLinks = [
@@ -69,11 +67,11 @@ export default function Navbar() {
         ))}
       </div>
 
-      {/* Right: Language Switcher & Mobile Menu */}
-      <div className="flex items-center justify-end gap-4 sm:gap-6 w-auto md:w-1/4">
-        {/* Premium Silicon Valley Language Switcher (Desktop) */}
+      {/* Right: Language Switcher */}
+      <div className="flex items-center justify-end w-auto md:w-1/4">
+        {/* Premium Silicon Valley Language Switcher */}
         <div 
-          className="relative hidden sm:block"
+          className="relative"
           onMouseEnter={() => setIsLangOpen(true)}
           onMouseLeave={() => setIsLangOpen(false)}
         >
@@ -112,68 +110,7 @@ export default function Navbar() {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="md:hidden p-2 -mr-2 text-slate-600 hover:text-slate-900 transition-colors relative w-10 h-10 flex items-center justify-center"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={isMobileMenuOpen ? "close" : "open"}
-              initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
-              animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-              transition={{ duration: 0.2 }}
-            >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </motion.div>
-          </AnimatePresence>
-        </button>
       </div>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-            className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-2xl border-b border-slate-200 shadow-2xl md:hidden overflow-hidden"
-          >
-            <div className="p-6 flex flex-col gap-3">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-xl sm:text-2xl font-bold text-slate-700 hover:text-slate-900 px-4 py-4 hover:bg-slate-50 rounded-2xl transition-colors flex items-center justify-between group"
-                >
-                  {link.name}
-                  <span className="text-slate-300 group-hover:text-slate-500 transition-colors group-hover:translate-x-1 duration-300">→</span>
-                </Link>
-              ))}
-              
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 to-transparent my-4" />
-              
-              <div className="flex justify-between px-4 gap-2">
-                {languages.map((lang) => (
-                  <button 
-                    key={lang.code}
-                    onClick={() => changeLanguage(lang.code)} 
-                    className={`flex-1 flex flex-col items-center gap-2 p-3 rounded-2xl border transition-all ${currentLang.code === lang.code ? 'bg-slate-100 border-slate-300 shadow-inner' : 'bg-white border-slate-200 hover:bg-slate-50'}`}
-                  >
-                    <span className="text-2xl">{lang.flag}</span>
-                    <span className="text-xs font-bold text-slate-700 uppercase">{lang.code}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </nav>
   );
 }

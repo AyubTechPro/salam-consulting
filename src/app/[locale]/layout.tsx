@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import MobileNav from '@/components/MobileNav';
 import { PostHogProvider, PostHogPageview } from '@/lib/posthog';
 import { Suspense } from 'react';
 import "../globals.css";
@@ -148,6 +149,7 @@ export default async function RootLayout(
               {props.children}
             </div>
             <Footer />
+            <MobileNav />
           </NextIntlClientProvider>
         </PostHogProvider>
       </body>
