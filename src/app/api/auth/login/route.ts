@@ -5,6 +5,9 @@ export async function POST(req: Request) {
   try {
     const { password } = await req.json();
     
+    // Artificial delay to mitigate timing attacks and brute-force
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
     if (password !== process.env.ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
     }

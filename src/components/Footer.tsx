@@ -50,10 +50,13 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-slate-600">
-                <a href="mailto:info@salamconsultingedu.com" className="flex items-center gap-3 hover:text-blue-600 transition-colors group">
+                <span 
+                  onClick={() => window.location.href = 'mailto:info@salamconsultingedu.com'}
+                  className="flex items-center gap-3 hover:text-blue-600 transition-colors group cursor-pointer"
+                >
                   <Mail className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:scale-110 transition-transform" />
                   <span>info@salamconsultingedu.com</span>
-                </a>
+                </span>
               </li>
               <li className="text-slate-600">
                 <a href="https://wa.me/992940076006" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-[#25D366] transition-colors group">

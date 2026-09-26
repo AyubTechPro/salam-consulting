@@ -36,7 +36,21 @@ const sendTelegramAlert = async (message: string) => {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, email, subject, message, locale = 'en', telemetry = {} } = body;
+    const { name, email, subject, message, _botTrap, locale = 'en', telemetry = {} } = body;
+
+    // SECURITY: Honeypot trap for dumb bots
+    if (_botTrap) {
+      console.warn('Bot trapped by honeypot:', email);
+      // Return simulated success to trick the bot
+      return NextResponse.json({ success: true, simulated: true, trapped: true });
+    }
+
+    // SECURITY: Honeypot trap for dumb bots
+    if (_botTrap) {
+      console.warn('Bot trapped by honeypot:', email);
+      // Return simulated success to trick the bot
+      return NextResponse.json({ success: true, simulated: true, trapped: true });
+    }
 
     // QA: Validate input fields securely
     if (!name || typeof name !== 'string' || name.trim() === '') {
