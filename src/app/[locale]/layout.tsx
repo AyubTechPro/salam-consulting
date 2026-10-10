@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       siteName: 'Salam Consulting',
       images: [
         {
-          url: '/logo/salamconsulting-logo-original.svg',
+          url: '/logo/salamconsulting-logo-original.png',
           width: 800,
           height: 600,
           alt: 'Salam Consulting Logo',
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       card: 'summary_large_image',
       title: t('title'),
       description: t('description'),
-      images: ['/logo/salamconsulting-logo-original.svg'],
+      images: ['/logo/salamconsulting-logo-original.png'],
     },
     robots: {
       index: true,
