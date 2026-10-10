@@ -29,9 +29,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     metadataBase: new URL('https://www.salamconsultingedu.com'),
     title: t('title'),
     description: t('description'),
-    icons: {
-      icon: '/logo/salamconsulting-logo-original.svg', // Assuming this can serve as a basic favicon for now
-    },
     openGraph: {
       title: t('title'),
       description: t('description'),
