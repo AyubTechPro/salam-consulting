@@ -62,7 +62,11 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
     const lead = leads.find(l => l.id === leadId);
     if (lead && lead.status !== newStatus) {
       setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-      await supabase.from('leads').update({ status: newStatus }).eq('id', leadId);
+      await fetch('/api/admin/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: leadId, status: newStatus })
+      });
     }
   };
 
@@ -284,6 +288,10 @@ export default function KanbanBoard({ initialLeads }: { initialLeads: Lead[] }) 
 
   function updateLeadStatus(id: string, status: string) {
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    supabase.from('leads').update({ status }).eq('id', id).then();
+    fetch('/api/admin/leads', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status })
+    }).catch(console.error);
   }
 }

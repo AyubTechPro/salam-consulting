@@ -73,7 +73,13 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
     if (selectedLead && selectedLead.id === id) {
       setSelectedLead({ ...selectedLead, status });
     }
-    await supabase.from('leads').update({ status }).eq('id', id);
+    
+    // Server-side update via secure API
+    await fetch('/api/admin/leads', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status })
+    });
   };
 
   const isVIP = (email: string) => {
