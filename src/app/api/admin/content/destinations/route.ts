@@ -2,12 +2,19 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { jwtVerify } from 'jose';
 
+function extractAdminToken(req: Request): string | null {
+  const cookieHeader = req.headers.get('cookie');
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(/(?:^|;\s*)admin_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1].trim()) : null;
+}
+
 // Middleware to verify admin
 async function verifyAdmin(req: Request) {
-  const token = req.headers.get('cookie')?.split('admin_token=')[1]?.split(';')[0];
+  const token = extractAdminToken(req);
   if (!token) return false;
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'default_secret');
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'default_secret_for_development_only');
     await jwtVerify(token, secret);
     return true;
   } catch {
@@ -38,8 +45,9 @@ export async function POST(req: Request) {
 
     if (error) throw error;
     return NextResponse.json({ success: true, destination: data });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
@@ -54,7 +62,9 @@ export async function DELETE(req: Request) {
     const { error } = await supabase.from('destinations').delete().eq('id', id);
     if (error) throw error;
     return NextResponse.json({ success: true });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+

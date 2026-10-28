@@ -1,9 +1,79 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Mail, Send, CheckCircle2 } from 'lucide-react';
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  _botTrap: string;
+}
+
+interface TelemetryData {
+  utm_source: string | null;
+  utm_medium: string | null;
+  utm_campaign: string | null;
+  device_type: string;
+  browser: string;
+  os: string;
+  referrer: string | null;
+}
+
+function getTelemetry(): TelemetryData {
+  if (typeof window === 'undefined') {
+    return {
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+      device_type: 'Desktop',
+      browser: 'Unknown',
+      os: 'Unknown',
+      referrer: null,
+    };
+  }
+
+  const searchParams = new URLSearchParams(window.location.search);
+  const ua = navigator.userAgent;
+
+  // Basic device detection
+  let device_type = 'Desktop';
+  if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+    device_type = 'Mobile';
+  } else if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    device_type = 'Tablet';
+  }
+
+  // Basic OS detection
+  let os = 'Unknown';
+  if (ua.indexOf('Win') !== -1) os = 'Windows';
+  if (ua.indexOf('Mac') !== -1) os = 'MacOS';
+  if (ua.indexOf('X11') !== -1) os = 'UNIX';
+  if (ua.indexOf('Linux') !== -1) os = 'Linux';
+  if (/Android/.test(ua)) os = 'Android';
+  if (/like Mac OS X/.test(ua)) os = 'iOS';
+
+  // Basic Browser detection
+  let browser = 'Unknown';
+  if (ua.indexOf('Chrome') !== -1) browser = 'Chrome';
+  else if (ua.indexOf('Safari') !== -1) browser = 'Safari';
+  else if (ua.indexOf('Firefox') !== -1) browser = 'Firefox';
+  else if (ua.indexOf('MSIE') !== -1 || ('documentMode' in document)) browser = 'IE';
+  else if (ua.indexOf('Edge') !== -1) browser = 'Edge';
+
+  return {
+    utm_source: searchParams.get('utm_source') || null,
+    utm_medium: searchParams.get('utm_medium') || null,
+    utm_campaign: searchParams.get('utm_campaign') || null,
+    device_type,
+    browser,
+    os,
+    referrer: document.referrer || null,
+  };
+}
 
 export default function Contact() {
   const t = useTranslations('Contact');
@@ -11,48 +81,20 @@ export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [telemetry, setTelemetry] = useState<any>({});
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+    _botTrap: '',
+  });
 
-  useEffect(() => {
-    // Gather Telemetry Data on mount
-    const searchParams = new URLSearchParams(window.location.search);
-    const ua = navigator.userAgent;
-    
-    // Basic device detection
-    let device_type = 'Desktop';
-    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
-      device_type = 'Mobile';
-    } else if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
-      device_type = 'Tablet';
-    }
-
-    // Basic OS detection
-    let os = 'Unknown';
-    if (ua.indexOf('Win') !== -1) os = 'Windows';
-    if (ua.indexOf('Mac') !== -1) os = 'MacOS';
-    if (ua.indexOf('X11') !== -1) os = 'UNIX';
-    if (ua.indexOf('Linux') !== -1) os = 'Linux';
-    if (/Android/.test(ua)) os = 'Android';
-    if (/like Mac OS X/.test(ua)) os = 'iOS';
-
-    // Basic Browser detection
-    let browser = 'Unknown';
-    if (ua.indexOf('Chrome') !== -1) browser = 'Chrome';
-    else if (ua.indexOf('Safari') !== -1) browser = 'Safari';
-    else if (ua.indexOf('Firefox') !== -1) browser = 'Firefox';
-    else if (ua.indexOf('MSIE') !== -1 || !!(document as any).documentMode === true) browser = 'IE';
-    else if (ua.indexOf('Edge') !== -1) browser = 'Edge';
-
-    setTelemetry({
-      utm_source: searchParams.get('utm_source') || null,
-      utm_medium: searchParams.get('utm_medium') || null,
-      utm_campaign: searchParams.get('utm_campaign') || null,
-      device_type,
-      browser,
-      os,
-      referrer: document.referrer || null,
-    });
-  }, []);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const fadeUp = {
     hidden: { opacity: 0, y: 20 },
@@ -63,15 +105,15 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
-    
-    const formData = new FormData(e.currentTarget);
+
     const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      subject: formData.get('subject'),
-      message: formData.get('message'),
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message,
+      _botTrap: formData._botTrap,
       locale: locale,
-      telemetry: telemetry
+      telemetry: getTelemetry()
     };
 
     try {
@@ -81,11 +123,23 @@ export default function Contact() {
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
-      
+      const resData = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(resData?.error || 'Failed to send message');
+      }
+
       setIsSubmitted(true);
-    } catch {
-      setError('Something went wrong. Please try again.');
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+        _botTrap: '',
+      });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -164,7 +218,17 @@ export default function Contact() {
                     transition={{ delay: 0.4 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsSubmitted(false)}
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setError('');
+                      setFormData({
+                        name: '',
+                        email: '',
+                        subject: '',
+                        message: '',
+                        _botTrap: '',
+                      });
+                    }}
                     className="text-sm font-bold text-blue-600 hover:text-white hover:bg-blue-600 transition-colors flex items-center gap-2 bg-blue-50 px-8 py-3.5 rounded-full shadow-sm"
                   >
                     <Send className="w-4 h-4" /> Send another message
@@ -174,29 +238,92 @@ export default function Contact() {
             </AnimatePresence>
 
             <form className="space-y-6 relative z-10" onSubmit={handleSubmit}>
-              {error && <div className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100">{error}</div>}
+              {/* SECURITY: Invisible Honeypot Trap for bots */}
+              <input 
+                type="text" 
+                name="_botTrap" 
+                value={formData._botTrap || ''} 
+                onChange={handleChange} 
+                className="hidden" 
+                tabIndex={-1} 
+                autoComplete="off" 
+                style={{ display: 'none' }} 
+              />
+
+              {error && (
+                <div role="alert" aria-live="assertive" className="text-red-500 text-sm font-medium bg-red-50 p-3 rounded-lg border border-red-100">
+                  {error}
+                </div>
+              )}
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">{t('form.name')}</label>
-                  <input name="name" required type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" placeholder="John Doe" />
+                  <input 
+                    name="name" 
+                    value={formData.name}
+                    onChange={handleChange}
+                    required 
+                    type="text" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" 
+                    placeholder="John Doe" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">{t('form.email')}</label>
-                  <input name="email" required type="email" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" placeholder="john@example.com" />
+                  <input 
+                    name="email" 
+                    value={formData.email}
+                    onChange={handleChange}
+                    required 
+                    type="email" 
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" 
+                    placeholder="john@example.com" 
+                  />
                 </div>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">{t('form.subject')}</label>
-                <input name="subject" required type="text" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" placeholder="How can we help you?" />
+                <input 
+                  name="subject" 
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required 
+                  type="text" 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium" 
+                  placeholder="How can we help you?" 
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">{t('form.message')}</label>
-                <textarea name="message" required rows={5} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium resize-none" placeholder="Write your message here..."></textarea>
+                <textarea 
+                  name="message" 
+                  value={formData.message}
+                  onChange={handleChange}
+                  required 
+                  rows={5} 
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:bg-white transition-all font-medium resize-none" 
+                  placeholder="Write your message here..."
+                ></textarea>
               </div>
-              <button disabled={isSubmitting} type="submit" className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl px-10 py-4 font-bold transition-all shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-2">
-                {isSubmitting ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span> : null}
-                {t('form.submit')}
+              <button 
+                disabled={isSubmitting} 
+                type="submit" 
+                aria-busy={isSubmitting}
+                className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl px-10 py-4 font-bold transition-all shadow-[0_4px_14px_0_rgba(37,99,235,0.39)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.23)] hover:-translate-y-0.5 flex items-center justify-center gap-2"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true"></span>
+                    <span className="sr-only">Sending message...</span>
+                    <span>{t('form.submit')}...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4" aria-hidden="true" />
+                    <span>{t('form.submit')}</span>
+                  </>
+                )}
               </button>
             </form>
           </div>

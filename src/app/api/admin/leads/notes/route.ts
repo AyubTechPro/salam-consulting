@@ -2,14 +2,25 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { jwtVerify } from 'jose';
 
+function extractAdminToken(req: Request): string | null {
+  const cookieHeader = req.headers.get('cookie');
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(/(?:^|;\s*)admin_token=([^;]+)/);
+  return match ? decodeURIComponent(match[1].trim()) : null;
+}
+
 export async function POST(req: Request) {
   try {
     // 1. Verify admin token
-    const token = req.headers.get('cookie')?.split('admin_token=')[1]?.split(';')[0];
+    const token = extractAdminToken(req);
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'default_secret');
-    await jwtVerify(token, secret);
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'default_secret_for_development_only');
+    try {
+      await jwtVerify(token, secret);
+    } catch {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // 2. Parse request
     const { id, text } = await req.json();
@@ -35,7 +46,7 @@ export async function POST(req: Request) {
     };
 
     // 4. Update Supabase
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('leads')
       .update({ notes: [...currentNotes, newNote] })
       .eq('id', id)
@@ -53,3 +64,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+

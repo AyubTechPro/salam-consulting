@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useTransition, useMemo } from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
+import { useState, useMemo } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 import { enUS, ru } from 'date-fns/locale';
-import { supabase } from '@/lib/supabase';
-import { Search, Calendar, Clock, Mail, AlignLeft, CheckSquare, X, Globe, Smartphone, Monitor, Compass, BarChart, ChevronRight } from 'lucide-react';
+import { Search, Clock, Mail, AlignLeft, X, Globe, Smartphone, Monitor, Compass, BarChart, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
@@ -53,33 +52,75 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
     );
   }, [leads, search]);
 
-  const COLUMNS = [
-    { id: 'new', title: tLeads('status.new'), color: 'bg-blue-50 text-blue-700 border-blue-200' },
-    { id: 'contacted', title: tLeads('status.contacted'), color: 'bg-amber-50 text-amber-700 border-amber-200' },
-    { id: 'meeting', title: tLeads('status.meeting'), color: 'bg-purple-50 text-purple-700 border-purple-200' },
-    { id: 'contract', title: tLeads('status.contract'), color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
-    { id: 'mou', title: tLeads('status.mou'), color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    { id: 'rejected', title: tLeads('status.rejected'), color: 'bg-zinc-50 text-zinc-700 border-zinc-200' }
-  ];
+  const COLUMNS = useMemo(() => {
+    const getLabel = (status: string, fallback: string) => {
+      try {
+        return tLeads(`status.${status}`) || fallback;
+      } catch {
+        return fallback;
+      }
+    };
+
+    return [
+      { id: 'new', title: getLabel('new', 'New Inquiry'), color: 'bg-blue-50 text-blue-700 border-blue-200' },
+      { id: 'contacted', title: getLabel('contacted', 'Contacted'), color: 'bg-amber-50 text-amber-700 border-amber-200' },
+      { id: 'meeting', title: getLabel('meeting', 'Meeting Scheduled'), color: 'bg-purple-50 text-purple-700 border-purple-200' },
+      { id: 'contract', title: getLabel('contract', 'Contract Sent'), color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+      { id: 'mou', title: getLabel('mou', 'MOU Signed'), color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+      { id: 'enrolled', title: getLabel('enrolled', 'Enrolled'), color: 'bg-teal-50 text-teal-700 border-teal-200' },
+      { id: 'rejected', title: getLabel('rejected', 'Rejected'), color: 'bg-zinc-50 text-zinc-700 border-zinc-200' }
+    ];
+  }, [tLeads]);
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [editNameValue, setEditNameValue] = useState('');
+  const [isUpdatingName, setIsUpdatingName] = useState(false);
+  const [nameError, setNameError] = useState<string | null>(null);
+
   const [newNote, setNewNote] = useState('');
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
+  const [noteError, setNoteError] = useState<string | null>(null);
 
-  const updateLeadStatus = async (id: string, status: string) => {
+  const [statusError, setStatusError] = useState<string | null>(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
+
+  const updateLeadStatus = async (id: string, newStatus: string) => {
+    const targetLead = leads.find(l => l.id === id);
+    if (!targetLead || targetLead.status === newStatus) return;
+
+    const previousStatus = targetLead.status;
+    setStatusError(null);
+    setUpdatingStatusId(id);
+
     // Optimistic UI update
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status: newStatus } : l));
     if (selectedLead && selectedLead.id === id) {
-      setSelectedLead({ ...selectedLead, status });
+      setSelectedLead(prev => prev ? { ...prev, status: newStatus } : null);
     }
-    
-    // Server-side update via secure API
-    await fetch('/api/admin/leads', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, status })
-    });
+
+    try {
+      const res = await fetch('/api/admin/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to update lead status');
+      }
+    } catch (err: unknown) {
+      // Revert optimistic update on network or server rejection
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, status: previousStatus } : l));
+      if (selectedLead && selectedLead.id === id) {
+        setSelectedLead(prev => prev ? { ...prev, status: previousStatus } : null);
+      }
+      const msg = err instanceof Error ? err.message : 'Network error updating lead status';
+      setStatusError(`Failed to update status for ${targetLead.name}: ${msg}`);
+      setTimeout(() => setStatusError(null), 5000);
+    } finally {
+      setUpdatingStatusId(null);
+    }
   };
 
   const isVIP = (email: string) => {
@@ -92,36 +133,65 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
       setIsEditingName(false);
       return;
     }
+    const previousName = selectedLead.name;
     const updatedName = editNameValue.trim();
-    setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, name: updatedName } : l));
-    setSelectedLead({ ...selectedLead, name: updatedName });
+    setNameError(null);
+    setIsUpdatingName(true);
     setIsEditingName(false);
-    
-    await fetch('/api/admin/leads', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: selectedLead.id, name: updatedName })
-    });
+
+    // Optimistic UI update
+    setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, name: updatedName } : l));
+    setSelectedLead(prev => prev ? { ...prev, name: updatedName } : null);
+
+    try {
+      const res = await fetch('/api/admin/leads', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedLead.id, name: updatedName })
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to update client name');
+      }
+    } catch (err: unknown) {
+      // Revert name on failure
+      setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, name: previousName } : l));
+      setSelectedLead(prev => prev ? { ...prev, name: previousName } : null);
+      const msg = err instanceof Error ? err.message : 'Network error updating name';
+      setNameError(msg);
+      setTimeout(() => setNameError(null), 5000);
+    } finally {
+      setIsUpdatingName(false);
+    }
   };
 
   const handleAddNote = async () => {
-    if (!selectedLead || newNote.trim() === '') return;
+    if (!selectedLead || newNote.trim() === '' || isSubmittingNote) return;
     setIsSubmittingNote(true);
-    
+    setNoteError(null);
+
     try {
       const res = await fetch('/api/admin/leads/notes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: selectedLead.id, text: newNote.trim() })
       });
-      
-      if (res.ok) {
-        const { note } = await res.json();
-        const updatedNotes = [...(selectedLead.notes || []), note];
-        setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, notes: updatedNotes } : l));
-        setSelectedLead({ ...selectedLead, notes: updatedNotes });
-        setNewNote('');
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to save note');
       }
+
+      const { note } = await res.json();
+      const updatedNotes = [...(selectedLead.notes || []), note];
+      setLeads(prev => prev.map(l => l.id === selectedLead.id ? { ...l, notes: updatedNotes } : l));
+      setSelectedLead(prev => prev ? { ...prev, notes: updatedNotes } : null);
+      setNewNote('');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Network error saving note';
+      setNoteError(msg);
+      setTimeout(() => setNoteError(null), 5000);
     } finally {
       setIsSubmittingNote(false);
     }
@@ -145,6 +215,30 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
           {tLeads('leadsCount', { count: filteredLeads.length })}
         </div>
       </div>
+
+      {/* Network Error Toast / Banner */}
+      <AnimatePresence>
+        {statusError && (
+          <motion.div 
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="mb-3 px-4 py-2.5 bg-red-50 border border-red-200 text-red-700 text-xs font-semibold rounded-lg flex items-center justify-between shadow-sm"
+            role="alert"
+          >
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span>{statusError}</span>
+            </div>
+            <button 
+              onClick={() => setStatusError(null)} 
+              className="text-red-400 hover:text-red-700 transition-colors p-1"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Linear-Style Data Table */}
       <div className="flex-1 bg-white rounded-xl border border-zinc-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.05)] overflow-hidden flex flex-col">
@@ -189,9 +283,11 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                   <div className="relative">
                     <select
                       value={lead.status}
+                      disabled={updatingStatusId === lead.id}
                       onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
                       className={`appearance-none pl-3 pr-8 py-1.5 text-xs font-bold border rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all uppercase tracking-wider
                         ${COLUMNS.find(c => c.id === lead.status)?.color || 'bg-zinc-50 text-zinc-700 border-zinc-200'}
+                        ${updatingStatusId === lead.id ? 'opacity-60 cursor-wait' : ''}
                       `}
                     >
                       {COLUMNS.map(col => (
@@ -199,7 +295,11 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                       ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-current opacity-50">
-                      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      {updatingStatusId === lead.id ? (
+                        <span className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -273,6 +373,7 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                           autoFocus
                           type="text"
                           value={editNameValue}
+                          disabled={isUpdatingName}
                           onChange={e => setEditNameValue(e.target.value)}
                           onBlur={handleUpdateName}
                           onKeyDown={e => e.key === 'Enter' && handleUpdateName()}
@@ -289,6 +390,14 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                       )}
                       {isVIP(selectedLead.email) && <span className="px-2 py-0.5 bg-amber-50 border border-amber-200 text-amber-600 text-[10px] font-black uppercase rounded tracking-widest shadow-sm">{tLeads('vipClient')}</span>}
                     </div>
+                    {nameError && (
+                      <div className="mt-1 text-[11px] font-semibold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded flex items-center justify-between" role="alert">
+                        <span>{nameError}</span>
+                        <button onClick={() => setNameError(null)} className="text-red-400 hover:text-red-600 ml-2">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
                     
                     {/* Quick Actions Bar */}
                     <div className="flex items-center gap-3 mt-2">
@@ -318,17 +427,28 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                     <span className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{t('pipelineStage') || 'Pipeline Stage'}</span>
                     <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1"><Clock className="w-3 h-3" /> {formatDistanceToNow(new Date(selectedLead.created_at), { locale: dateLocale, addSuffix: true })}</span>
                   </div>
-                  <select 
-                    value={selectedLead.status}
-                    onChange={(e) => updateLeadStatus(selectedLead.id, e.target.value)}
-                    className={`w-full appearance-none px-4 py-3 text-sm font-bold border rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all uppercase tracking-wider shadow-sm
-                      ${COLUMNS.find(c => c.id === selectedLead.status)?.color || 'bg-zinc-50 text-zinc-700 border-zinc-200'}
-                    `}
-                  >
-                    {COLUMNS.map(col => (
-                      <option key={col.id} value={col.id}>{col.title}</option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select 
+                      value={selectedLead.status}
+                      disabled={updatingStatusId === selectedLead.id}
+                      onChange={(e) => updateLeadStatus(selectedLead.id, e.target.value)}
+                      className={`w-full appearance-none px-4 py-3 text-sm font-bold border rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all uppercase tracking-wider shadow-sm
+                        ${COLUMNS.find(c => c.id === selectedLead.status)?.color || 'bg-zinc-50 text-zinc-700 border-zinc-200'}
+                        ${updatingStatusId === selectedLead.id ? 'opacity-60 cursor-wait' : ''}
+                      `}
+                    >
+                      {COLUMNS.map(col => (
+                        <option key={col.id} value={col.id}>{col.title}</option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-current opacity-50">
+                      {updatingStatusId === selectedLead.id ? (
+                        <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="p-6 space-y-6">
@@ -424,9 +544,18 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                       
                       {/* Note Input */}
                       <div className="p-3 border-t border-zinc-100 bg-white">
+                        {noteError && (
+                          <div className="mb-2 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-3 py-1.5 rounded-lg flex items-center justify-between" role="alert">
+                            <span>{noteError}</span>
+                            <button onClick={() => setNoteError(null)} className="text-red-400 hover:text-red-600">
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        )}
                         <textarea
                           value={newNote}
                           onChange={(e) => setNewNote(e.target.value)}
+                          disabled={isSubmittingNote}
                           onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                               e.preventDefault();
@@ -441,9 +570,16 @@ export default function CrmPipeline({ initialLeads }: { initialLeads: Lead[] }) 
                           <button 
                             onClick={handleAddNote}
                             disabled={!newNote.trim() || isSubmittingNote}
-                            className="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                            className="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center gap-1.5"
                           >
-                            {isSubmittingNote ? t('savingNote') : t('saveNote')}
+                            {isSubmittingNote ? (
+                              <>
+                                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>{t('savingNote')}</span>
+                              </>
+                            ) : (
+                              <span>{t('saveNote')}</span>
+                            )}
                           </button>
                         </div>
                       </div>

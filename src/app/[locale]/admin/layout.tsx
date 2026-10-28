@@ -4,9 +4,67 @@ import { useState } from 'react';
 import { useRouter, useParams, usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Users, Settings, LogOut, Menu, Globe, ShieldCheck, FileText, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Users, Settings, LogOut, Menu, ShieldCheck, FileText, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { CommandPalette } from '@/components/admin/CommandPalette';
+
+interface NavItem {
+  name: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+}
+
+interface SidebarProps {
+  navItems: NavItem[];
+  pathname: string;
+  onNavigate: () => void;
+  onLogout: () => void;
+  logoutText: string;
+}
+
+function Sidebar({ navItems, pathname, onNavigate, onLogout, logoutText }: SidebarProps) {
+  return (
+    <div className="flex flex-col h-full bg-[#FAFAFA] text-zinc-900 border-r border-zinc-200">
+      <div className="p-5 flex items-center gap-3 text-zinc-900 font-semibold tracking-tight text-sm border-b border-zinc-200">
+        <div className="w-6 h-6 rounded bg-black flex items-center justify-center">
+          <ShieldCheck className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+        </div>
+        Salam HQ
+      </div>
+      
+      <div className="flex-1 py-6 px-3 flex flex-col gap-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link 
+              key={item.name} 
+              href={item.href}
+              onClick={onNavigate}
+              className="relative group outline-none"
+            >
+              <div className={`relative flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-sm font-medium z-10 ${
+                isActive ? 'bg-zinc-100/80 text-zinc-900' : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/50'
+              }`}>
+                <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-zinc-900' : 'text-zinc-400 group-hover:text-zinc-600'}`} strokeWidth={isActive ? 2 : 1.5} />
+                {item.name}
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      <div className="p-3 border-t border-zinc-200">
+        <button 
+          onClick={onLogout}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-all text-sm font-medium text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 outline-none"
+        >
+          <LogOut className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
+          {logoutText}
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -26,7 +84,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.refresh();
   };
 
-  const navItems = [
+  const navItems: NavItem[] = [
     { name: t('dashboard'), href: `/${locale}/admin`, icon: LayoutDashboard },
     { name: t('leads'), href: `/${locale}/admin/leads`, icon: Users },
     { name: t('content') || 'Content', href: `/${locale}/admin/content`, icon: FileText },
@@ -39,53 +97,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.refresh();
   };
 
-  const Sidebar = () => (
-    <div className="flex flex-col h-full bg-[#FAFAFA] text-zinc-900 border-r border-zinc-200">
-      <div className="p-5 flex items-center gap-3 text-zinc-900 font-semibold tracking-tight text-sm border-b border-zinc-200">
-        <div className="w-6 h-6 rounded bg-black flex items-center justify-center">
-          <ShieldCheck className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
-        </div>
-        Salam HQ
-      </div>
-      
-      <div className="flex-1 py-6 px-3 flex flex-col gap-1">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link 
-              key={item.name} 
-              href={item.href}
-              onClick={() => setIsMobileOpen(false)}
-              className="relative group outline-none"
-            >
-              <div className={`relative flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors text-sm font-medium z-10 ${
-                isActive ? 'bg-zinc-100/80 text-zinc-900' : 'text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100/50'
-              }`}>
-                <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-zinc-900' : 'text-zinc-400 group-hover:text-zinc-600'}`} strokeWidth={isActive ? 2 : 1.5} />
-                {item.name}
-              </div>
-            </Link>
-          );
-        })}
-      </div>
-
-      <div className="p-3 border-t border-zinc-200">
-        <button 
-          onClick={handleLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-all text-sm font-medium text-zinc-500 hover:bg-zinc-100/50 hover:text-zinc-900 outline-none"
-        >
-          <LogOut className="w-4 h-4 text-zinc-400" strokeWidth={1.5} />
-          {t('logout')}
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-white flex font-sans selection:bg-zinc-200 text-zinc-900">
       {/* Desktop Sidebar */}
       <div className="hidden md:block w-64 h-screen sticky top-0 z-20">
-        <Sidebar />
+        <Sidebar 
+          navItems={navItems}
+          pathname={pathname}
+          onNavigate={() => setIsMobileOpen(false)}
+          onLogout={handleLogout}
+          logoutText={t('logout')}
+        />
       </div>
 
       {/* Mobile Sidebar */}
@@ -106,7 +128,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className="w-64 h-full relative z-50 shadow-2xl"
             >
-              <Sidebar />
+              <Sidebar 
+                navItems={navItems}
+                pathname={pathname}
+                onNavigate={() => setIsMobileOpen(false)}
+                onLogout={handleLogout}
+                logoutText={t('logout')}
+              />
             </motion.div>
           </div>
         )}

@@ -38,18 +38,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, subject, message, _botTrap, locale = 'en', telemetry = {} } = body;
 
-    // SECURITY: Honeypot trap for dumb bots
+    // SECURITY: Honeypot trap for spam bots
     if (_botTrap) {
       console.warn('Bot trapped by honeypot:', email);
-      // Return simulated success to trick the bot
-      return NextResponse.json({ success: true, simulated: true, trapped: true });
-    }
-
-    // SECURITY: Honeypot trap for dumb bots
-    if (_botTrap) {
-      console.warn('Bot trapped by honeypot:', email);
-      // Return simulated success to trick the bot
-      return NextResponse.json({ success: true, simulated: true, trapped: true });
+      // Return simulated success with HTTP 200 without saving to DB or sending notifications
+      return NextResponse.json({ success: true, simulated: true, trapped: true }, { status: 200 });
     }
 
     // QA: Validate input fields securely
@@ -162,7 +155,14 @@ export async function POST(req: Request) {
     });
 
     // 3. SEND AUTOMATED 'THANK YOU' EMAIL TO THE USER (QA: i18n Fix)
-    const translations: Record<string, any> = {
+    interface EmailTranslation {
+      subject: string;
+      hello: string;
+      received: string;
+      reviewing: string;
+      quote: string;
+    }
+    const translations: Record<string, EmailTranslation> = {
       en: {
         subject: 'Inquiry Received - Salam Consulting',
         hello: `Hello ${name.split(' ')[0]},`,

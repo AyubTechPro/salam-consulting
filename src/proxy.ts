@@ -40,7 +40,7 @@ export async function proxy(req: NextRequest) {
         process.env.JWT_SECRET || 'default_secret_for_development_only'
       );
       await jwtVerify(token, secret);
-    } catch (err) {
+    } catch {
       // Invalid token
       const url = req.nextUrl.clone();
       const localeMatch = pathname.match(/^\/(en|tg|ru)/);

@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase';
-import KanbanBoard from '@/components/admin/KanbanBoard';
-import CrmPipeline from '@/components/admin/CrmPipeline';
 import { getTranslations } from 'next-intl/server';
+import LeadsViewSwitcher from '@/components/admin/LeadsViewSwitcher';
 
 export const revalidate = 0;
 
@@ -20,13 +19,10 @@ export default async function LeadsPage({ params }: { params: Promise<{ locale: 
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight">{t('title')} (Kanban)</h1>
-        <p className="text-slate-500 font-medium text-sm mt-1">{t('subtitle')}</p>
-      </div>
-
-      <CrmPipeline initialLeads={leads || []} />
-    </div>
+    <LeadsViewSwitcher
+      initialLeads={leads || []}
+      title={t('title')}
+      subtitle={t('subtitle')}
+    />
   );
 }

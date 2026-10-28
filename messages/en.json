@@ -180,6 +180,7 @@
         "meeting": "Meeting Scheduled",
         "contract": "Contract Sent",
         "mou": "MOU Signed",
+        "enrolled": "Enrolled",
         "rejected": "Rejected"
       },
       "empty": "No leads found matching your criteria.",
